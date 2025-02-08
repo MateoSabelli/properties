@@ -139,8 +139,22 @@ export const signOutAction = async () => {
 };
 
 
-export const addClient = async (client ) => {
-  
+interface Client {
+  name: string;
+  email: string;
+  phone: string;
+  barrio: string;
+  presupuesto: string;
+  tipologia: string;
+  ambientes: string;
+}
+
+interface InsertResult {
+  data?: any;
+  error?: any;
+}
+
+export const addClient = async (client: Client): Promise<InsertResult> => {
   const supabase = await createClient();
   const { data: session, error: sessionError } = await supabase.auth.getSession();
 
