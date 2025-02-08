@@ -75,7 +75,7 @@ const properties = [
   },
 ];
 
-export function Properties() {
+export default function Properties() {
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
 
   const toggleFavorite = (id: string) => {
@@ -138,7 +138,9 @@ function PropertyCard({
           onClick={onFavoriteClick}
           className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-colors z-10">
           <Heart
-            className={`w-5 h-5 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"}`}
+            className={`w-5 h-5 ${
+              isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"
+            }`}
           />
         </button>
       </div>
