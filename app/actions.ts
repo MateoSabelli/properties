@@ -4,10 +4,9 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { data } from "autoprefixer";
 
-export const signUpAction = async (formData: FormData) => {
-  const email = formData.get("email")?.toString();
-  const password = formData.get("password")?.toString();
+export const signUpAction = async (email: string, password: string , repetirpassword: string) => {
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
 
@@ -16,6 +15,14 @@ export const signUpAction = async (formData: FormData) => {
       "error",
       "/sign-up",
       "Email and password are required",
+    );
+  }
+
+  if (password !== repetirpassword) {
+    return encodedRedirect(
+      "error",
+      "/sign-up",
+      "Passwords do not match",
     );
   }
 
@@ -39,9 +46,7 @@ export const signUpAction = async (formData: FormData) => {
   }
 };
 
-export const signInAction = async (formData: FormData) => {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+export const signInAction = async (email: string, password: string) => {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -132,3 +137,58 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   return redirect("/sign-in");
 };
+
+
+export const addClient = async (client) => {
+  
+  const supabase = await createClient();
+  const { data: session, error: sessionError } = await supabase.auth.getSession();
+
+  if (sessionError || !session?.session) {
+    console.error("❌ No active session found or error fetching session:", sessionError);
+    return { error: "No active session found." };
+  }
+  
+  // Obtén el UID del usuario autenticado desde Supabase para compararlo
+  const { data: user, error: userError } = await supabase.auth.getUser();
+
+  if (userError) {
+    console.error("Error fetching user:", userError);
+    return { error: userError };
+  }
+  // Si el userId pasado como parámetro no coincide con el que devuelve Supabase
+
+  // Intentar la inserción con el mismo UUID
+  const { data, error } = await supabase
+    .from('Accounts')
+    .insert([{ user_id: user?.user?.id, name: client.name, email: client.email, phone: client.phone, barrio: client.barrio, presupuesto: client.presupuesto, tipologia: client.tipologia, ambientes: client.ambientes }])
+    .select();
+
+  if (error) {
+    console.error("Error inserting client:", error);
+    return { error };
+  }
+
+  return { data };
+};
+
+export const FetchClients = async () => {
+  const supabase = await createClient();
+  let { data: Accounts, error } = await supabase
+    .from('Accounts')
+    .select('*')
+    
+
+  if (error) {
+    console.error('Error fetching accounts:', error);
+    return { Accounts: null, error }; // Retorna null si hay error
+  }
+
+  console.log('Filtered accounts:', Accounts);
+  return { Accounts, error }; // Devuelve correctamente la data
+};
+
+
+
+
+
