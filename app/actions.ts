@@ -139,7 +139,7 @@ export const signOutAction = async () => {
 };
 
 
-export const addClient = async (client) => {
+export const addClient = async (client ) => {
   
   const supabase = await createClient();
   const { data: session, error: sessionError } = await supabase.auth.getSession();
