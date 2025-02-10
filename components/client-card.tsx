@@ -28,7 +28,7 @@ export function ClientCard({
 }: ClientCardProps) {
   return (
     <Link
-      href={`/propiedades?cliente=${encodeURIComponent(name)}`}
+      href={`/${id}?cliente=${encodeURIComponent(name)}&barrio=${encodeURIComponent(barrio)}&tipologia=${encodeURIComponent(tipologia)}&presupuesto=${presupuesto}&ambientes=${ambientes}&operacion=${encodeURIComponent(operacion)}`}
       className="block hover:scale-105 transition-all">
       <Card className="w-full max-w-sm">
         <CardContent className="pt-6">

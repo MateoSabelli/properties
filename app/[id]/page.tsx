@@ -1,36 +1,21 @@
-/* "use client";
+"use client";
 import { useEffect, useState } from "react";
-import { Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FetchPropertiesByClient } from "../actions";
 import { useSearchParams } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+import { Heart, Home, MapPin, Bed, DollarSign } from "lucide-react";
 
-export default function Properties() {
+export default function ClientProperties() {
   const searchParams = useSearchParams();
   const clientName = searchParams.get("cliente");
-  const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
-  const [accountsClients, setAccountsClients] = useState<any[] | null>(null);
-  const [name, setName] = useState<string>("");
+  const barrio = searchParams.get("barrio");
+  const tipologia = searchParams.get("tipologia");
+  const presupuesto = searchParams.get("presupuesto");
+  const ambientes = searchParams.get("ambientes");
+  const operacion = searchParams.get("operacion");
   const [properties, setProperties] = useState<any[] | null>(null);
-  const [selectedClient, setSelectedClient] = useState<string | null>(
-    "Mariano Sabelli"
-  );
-
-  const toggleFavorite = (id: string) => {
-    setFavorites((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
-  const fetchPropertiesByClient = async (clientName: string) => {
-    const { data: properties, error } =
-      await FetchPropertiesByClient(clientName);
-    if (!error && properties) {
-      setProperties(properties);
-    }
-  };
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -51,17 +36,38 @@ export default function Properties() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-6">
-        Propiedades para {decodeURIComponent(clientName)}
-      </h1>
+      <div className="mb-6 border-b pb-4 flex flex-col sm:flex-row justify-between items-center">
+        <h1 className="text-2xl font-semibold mb-3">
+          Propiedades para {decodeURIComponent(clientName)}
+        </h1>
+        <div className="flex gap-2 flex-wrap">
+          <Badge variant="secondary">
+            <MapPin className="w-3 h-3 mr-1" />
+            {decodeURIComponent(barrio || "")}
+          </Badge>
+          <Badge variant="secondary">
+            <Home className="w-3 h-3 mr-1" />
+            {decodeURIComponent(tipologia || "")}
+          </Badge>
+          <Badge variant="secondary">
+            <DollarSign className="w-3 h-3 mr-1" />
+            {decodeURIComponent(presupuesto || "")}
+          </Badge>
+          <Badge variant="secondary">
+            <Bed className="w-3 h-3 mr-1" />
+            {ambientes}
+          </Badge>
+          <Badge variant="outline">{decodeURIComponent(operacion || "")}</Badge>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {properties?.map((property) => (
           <PropertyCard
             key={property.id}
             property={property}
-            isFavorite={favorites[property.id]}
-            onFavoriteClick={() => toggleFavorite(property.id)}
-            onEditClick={() => {}}
+            isFavorite={false}
+            onFavoriteClick={() => {}}
           />
         ))}
       </div>
@@ -84,14 +90,12 @@ interface PropertyCardProps {
   };
   isFavorite: boolean;
   onFavoriteClick: () => void;
-  onEditClick?: () => void;
 }
 
 function PropertyCard({
   property,
   isFavorite,
   onFavoriteClick,
-  onEditClick,
 }: PropertyCardProps) {
   let currencySymbol = "";
   if (property.moneda === "USD") {
@@ -149,17 +153,6 @@ function PropertyCard({
           </p>
         </div>
       </div>
-    </div>
-  );
-}
- */
-
-import React from "react";
-
-export default function page() {
-  return (
-    <div>
-      <h1>Propiedades</h1>
     </div>
   );
 }
