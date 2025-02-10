@@ -153,3 +153,13 @@ function PropertyCard({
   );
 }
  */
+
+import React from "react";
+
+export default function page() {
+  return (
+    <div>
+      <h1>Propiedades</h1>
+    </div>
+  );
+}
