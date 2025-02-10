@@ -25,6 +25,7 @@ export function AddClientForm({ onCancel, onClientAdded }: AddClientFormProps) {
     presupuesto: "",
     tipologia: "",
     ambientes: "",
+    operacion: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,6 +57,7 @@ export function AddClientForm({ onCancel, onClientAdded }: AddClientFormProps) {
         presupuesto: "",
         tipologia: "",
         ambientes: "",
+        operacion: "",
       });
     }
   };
@@ -94,6 +96,19 @@ export function AddClientForm({ onCancel, onClientAdded }: AddClientFormProps) {
               value={clients.phone}
               onChange={handleChange}
             />
+          </div>
+          <div>
+            <Label htmlFor="operacion">Tipo de Operación</Label>
+            <Select
+              onValueChange={(value) => handleSelectChange(value, "operacion")}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccione la operación" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Venta">Venta</SelectItem>
+                <SelectItem value="Alquiler">Alquiler</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label htmlFor="presupuesto">Presupuesto</Label>
@@ -140,7 +155,6 @@ export function AddClientForm({ onCancel, onClientAdded }: AddClientFormProps) {
             />
           </div>
         </div>
-
         <div className="flex justify-end space-x-2">
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancelar

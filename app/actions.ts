@@ -147,6 +147,7 @@ interface Client {
   presupuesto: string;
   tipologia: string;
   ambientes: string;
+  operacion: string;
 }
 
 interface InsertResult {
@@ -157,6 +158,7 @@ interface InsertResult {
 export const addClient = async (client: Client): Promise<InsertResult> => {
   const supabase = await createClient();
   const { data: session, error: sessionError } = await supabase.auth.getSession();
+
 
   if (sessionError || !session?.session) {
     console.error("❌ No active session found or error fetching session:", sessionError);
@@ -175,7 +177,7 @@ export const addClient = async (client: Client): Promise<InsertResult> => {
   // Intentar la inserción con el mismo UUID
   const { data, error } = await supabase
     .from('Accounts')
-    .insert([{ user_id: user?.user?.id, name: client.name, email: client.email, phone: client.phone, barrio: client.barrio, presupuesto: client.presupuesto, tipologia: client.tipologia, ambientes: client.ambientes }])
+    .insert([{ user_id: user?.user?.id, name: client.name, email: client.email, phone: client.phone, barrio: client.barrio, presupuesto: client.presupuesto, tipologia: client.tipologia, ambientes: client.ambientes, operacion: client.operacion }])
     .select();
 
   if (error) {
@@ -188,21 +190,184 @@ export const addClient = async (client: Client): Promise<InsertResult> => {
 
 export const FetchClients = async () => {
   const supabase = await createClient();
+  const { data: user, error: userError } = await supabase.auth.getUser();
+  if (userError) {
+    console.error("Error fetching user:", userError);
+    return { error: userError };
+  }
   let { data: Accounts, error } = await supabase
     .from('Accounts')
     .select('*')
-    
-
+    .eq('user_id', user?.user?.id)
+    .order('created_at', { ascending: false });
   if (error) {
     console.error('Error fetching accounts:', error);
-    return { Accounts: null, error }; // Retorna null si hay error
+    return { data: null, error }; // Retorna null si hay error
   }
 
-  console.log('Filtered accounts:', Accounts);
-  return { Accounts, error }; // Devuelve correctamente la data
+  
+  return { data: Accounts, error }; // Devuelve correctamente la data
 };
 
 
 
+export const uploadImage = async (file: File) => {
+  const supabase = await createClient();
+  
+  // Generar un nombre único para el archivo
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Math.random()}.${fileExt}`;
+  const filePath = `${fileName}`;
+
+  // Subir el archivo al bucket 'images'
+  const { data, error } = await supabase.storage
+    .from('imagenes')
+    .upload(filePath, file);
+
+  if (error) {
+    console.error('Error uploading image:', error);
+    return { error };
+  }
+
+  // Obtener la URL pública de la imagen
+  const { data: { publicUrl } } = supabase.storage
+    .from('imagenes')
+    .getPublicUrl(filePath);
+
+  return { data: publicUrl };
+};
+
+// Para obtener la imagen
+export const getImageUrl = async (path: string) => {
+  const supabase = await createClient();
+  const { data: { publicUrl } } = supabase.storage
+    .from('imagenes')
+    .getPublicUrl(path);
+  
+  return publicUrl;
+};
 
 
+interface Property {
+  id: string;
+  cliente: string;
+  ubicacion: string;
+  direccion: string;
+  precio: number;
+  moneda: string;
+  ambientes: string;
+  imagen: string;
+  link: string;
+  descripcion?: string;
+}
+
+
+export const addProperty = async (property: Property): Promise<InsertResult> => {
+  const supabase = await createClient();
+  const { data: session, error: sessionError } = await supabase.auth.getSession();
+
+
+  if (sessionError || !session?.session) {
+    console.error("❌ No active session found or error fetching session:", sessionError);
+    return { error: "No active session found." };
+  }
+  
+  // Obtén el UID del usuario autenticado desde Supabase para compararlo
+  const { data: user, error: userError } = await supabase.auth.getUser();
+
+  if (userError) {
+    console.error("Error fetching user:", userError);
+    return { error: userError };
+  }
+  // Si el userId pasado como parámetro no coincide con el que devuelve Supabase
+
+  // Intentar la inserción con el mismo UUID
+  const { data, error } = await supabase
+    .from('properties')
+    .insert([{ 
+      cliente: property.cliente,
+      user_id: user?.user?.id, 
+      ubicacion: property.ubicacion,
+      direccion: property.direccion,
+      precio: property.precio,
+      moneda: property.moneda,
+      ambientes: property.ambientes,
+      imagen: property.imagen,
+      link: property.link
+    }])
+    .select();
+
+  if (error) {
+    console.error("Error inserting client:", error);
+    return { error };
+  }
+
+  return { data };
+};
+
+export const FetchProperties = async () => {
+  const supabase = await createClient();
+  const { data: user, error: userError } = await supabase.auth.getUser();
+  if (userError) {
+    console.error("Error fetching user:", userError);
+    return { error: userError };
+  }
+  let { data: Properties, error } = await supabase
+    .from('properties')
+    .select('*')
+    .eq('user_id', user?.user?.id)
+    .order('created_at', { ascending: false });
+  if (error) {
+    console.error('Error fetching accounts:', error);
+    return { data: null, error }; // Retorna null si hay error
+  }
+
+  
+  return { data: Properties, error }; // Devuelve correctamente la data
+};
+
+export const FetchPropertiesByClient = async (clientName: string) => {
+  const supabase = await createClient();
+  
+  let { data: Properties, error } = await supabase
+    .from('properties')
+    .select('*')
+    .eq('cliente', clientName)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching properties:', error);
+    return { data: null, error };
+  }
+
+  return { data: Properties, error };
+};
+
+
+export const updateProperty = async (property: Property): Promise<InsertResult> => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('properties')
+    .update({ 
+      cliente: property.cliente,
+      ubicacion: property.ubicacion,
+      direccion: property.direccion,
+      precio: property.precio,
+      moneda: property.moneda,
+      ambientes: property.ambientes,
+      imagen: property.imagen,
+      link: property.link
+    })
+    .eq('id', property.id)
+    .select();
+
+  console.log("data");
+  console.log(data);
+  if (error) {
+    console.error("Error updating property:", error);
+    return { error };
+  }
+
+  return { data };
+};

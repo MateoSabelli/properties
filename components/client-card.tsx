@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { MapPin, Home, DollarSign, Users } from "lucide-react";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 interface ClientCardProps {
   id: string;
@@ -12,6 +12,7 @@ interface ClientCardProps {
   presupuesto: number;
   tipologia: string;
   ambientes: number;
+  operacion: string;
 }
 
 export function ClientCard({
@@ -21,37 +22,45 @@ export function ClientCard({
   tipologia,
   presupuesto,
   ambientes,
+  operacion,
   phone,
   email,
 }: ClientCardProps) {
   return (
-    <Card className="w-full max-w-sm">
-      <CardContent className="pt-6">
-        <h3 className="text-lg font-semibold mb-2">{name}</h3>
-        <div className="space-y-2">
-          <div className="flex items-center">
-            <MapPin className="w-4 h-4 mr-2 text-gray-500" />
-            <span>{barrio}</span>
+    <Link
+      href={`/propiedades?cliente=${encodeURIComponent(name)}`}
+      className="block hover:scale-105 transition-all">
+      <Card className="w-full max-w-sm">
+        <CardContent className="pt-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold ">{name}</h3>
+            <Badge
+              variant="secondary"
+              className="bg-emerald-400 hover:bg-emerald-400 text-white">
+              {operacion}
+            </Badge>
           </div>
-          <div className="flex items-center">
-            <Home className="w-4 h-4 mr-2 text-gray-500" />
-            <span>{tipologia}</span>
+
+          <div className="space-y-2">
+            <div className="flex items-center">
+              <MapPin className="w-4 h-4 mr-2 text-gray-500" />
+              <span>{barrio}</span>
+            </div>
+            <div className="flex items-center">
+              <Home className="w-4 h-4 mr-2 text-gray-500" />
+              <span>{tipologia}</span>
+            </div>
+            <div className="flex items-center">
+              <DollarSign className="w-4 h-4 mr-2 text-gray-500" />
+              <span> ${presupuesto} </span>
+            </div>
+            <div className="flex items-center">
+              <Users className="w-4 h-4 mr-2 text-gray-500" />
+              <span>{ambientes} ambientes</span>
+            </div>
           </div>
-          <div className="flex items-center">
-            <DollarSign className="w-4 h-4 mr-2 text-gray-500" />
-            <span> ${presupuesto} </span>
-          </div>
-          <div className="flex items-center">
-            <Users className="w-4 h-4 mr-2 text-gray-500" />
-            <span>{ambientes} ambientes</span>
-          </div>
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Button asChild className="w-full">
-          <Link href={`/clients/${id}`}>Ver más</Link>
-        </Button>
-      </CardFooter>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

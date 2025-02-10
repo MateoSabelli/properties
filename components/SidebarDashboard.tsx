@@ -6,15 +6,15 @@ import {
   IconSettings,
   IconUserBolt,
 } from "@tabler/icons-react";
-import { Home } from "lucide-react";
+import { Home, FileUser } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
 import { Button } from "./ui/button";
-import { FetchClients, signOutAction } from "@/app/actions";
-import { AddClientForm } from "./add-client-form";
-import { ClientCard } from "./client-card";
+import { FetchClients, FetchProperties, signOutAction } from "@/app/actions";
+import { Properties } from "./properties";
+import Clients from "./Clients";
 
 interface SidebarDemoProps {
   user: {
@@ -32,6 +32,13 @@ export function SidebarDemo({ user }: SidebarDemoProps) {
       href: "#",
       icon: (
         <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Clientes",
+      href: "#",
+      icon: (
+        <FileUser className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
@@ -66,6 +73,11 @@ export function SidebarDemo({ user }: SidebarDemoProps) {
   const [open, setOpen] = useState(false);
   const [activeSideLink, setActiveSideLink] = useState("Dashboard");
 
+  const handleClick = (link: string) => {
+    setActiveSideLink(link);
+    setOpen(false);
+  };
+
   return (
     <div
       className={cn(
@@ -82,7 +94,7 @@ export function SidebarDemo({ user }: SidebarDemoProps) {
                   <SidebarLink
                     key={idx}
                     link={link}
-                    onClick={() => setActiveSideLink(link.label)}
+                    onClick={() => handleClick(link.label)}
                   />
                 ))}
                 {open ? <Logout /> : <LogoutIcon />}
@@ -165,66 +177,60 @@ interface DashboardProps extends SidebarDemoProps {
 const Dashboard = ({ user, activeSideLink }: DashboardProps) => {
   const [showAddClientForm, setShowAddClientForm] = useState(false);
   const [accountsClients, setAccountsClients] = useState<any[] | null>(null);
+  const [name, setName] = useState<any[] | null>(null);
+  const [propertiesData, setPropertiesData] = useState<any[] | null>(null);
 
   const fetchClients = async () => {
     if (!user?.id) return;
-    const { Accounts, error } = await FetchClients();
-    if (!error) {
-      setAccountsClients(Accounts);
+    const { data, error } = await FetchClients();
+    const { data: properties, error: propertiesError } =
+      await FetchProperties();
+
+    if (!error && data) {
+      setAccountsClients(data);
+      setName(data[0]?.name || "");
+    }
+    if (!propertiesError && properties) {
+      setPropertiesData(properties);
     }
   };
-
   useEffect(() => {
     fetchClients();
+    FetchProperties();
   }, [user?.id]);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // Aquí iría la lógica para enviar los datos del formulario
+    console.log("Formulario enviado");
+  };
+
+  // En tu componente
 
   const renderContent = () => {
     switch (activeSideLink) {
       case "Dashboard":
+        return <></>;
+      case "Clientes":
         return (
-          <>
-            <div className="flex gap-2">
-              {/* Aquí puedes renderizar elementos tipo animación o resumen */}
-            </div>
-            <div className="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold dark:text-white">
-                  Clientes
-                </h2>
-                <Button
-                  className={showAddClientForm ? "hidden" : "block"}
-                  onClick={() => setShowAddClientForm(!showAddClientForm)}>
-                  Agregar Cliente
-                </Button>
-              </div>
-              {showAddClientForm ? (
-                <AddClientForm
-                  onCancel={() => setShowAddClientForm(false)}
-                  onClientAdded={() => {
-                    setShowAddClientForm(false);
-                    fetchClients();
-                  }}
-                />
-              ) : (
-                <div className="overflow-x-auto">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 pb-4">
-                    {accountsClients ? (
-                      accountsClients.map((client) => (
-                        <ClientCard key={client.name} {...client} />
-                      ))
-                    ) : (
-                      <p className="text-center text-gray-500 dark:text-gray-400 py-8">
-                        Cargando...
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </>
+          <Clients
+            showAddClientForm={showAddClientForm}
+            setShowAddClientForm={setShowAddClientForm}
+            accountsClients={accountsClients}
+            fetchClients={fetchClients}
+          />
         );
+      case "Propiedades":
+        return (
+          <Properties
+            accountsClients={accountsClients}
+            propertiesData={propertiesData}
+          />
+        );
+
       case "Profile":
         return <div className="p-6">Aquí va el perfil del usuario</div>;
+
       case "Settings":
         return <div className="p-6">Aquí están las configuraciones</div>;
       case "Logout":
@@ -236,9 +242,8 @@ const Dashboard = ({ user, activeSideLink }: DashboardProps) => {
   };
 
   return (
-    <div className="flex flex-1">
-      <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-        <div className="text-lg font-bold">Dashboard de {user.email}</div>
+    <div className="flex flex-1 bg-gray-50">
+      <div className="p-2 md:p-10 rounded-tl-2x  dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         {renderContent()}
       </div>
     </div>
