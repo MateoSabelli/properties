@@ -1,4 +1,4 @@
-"use client";
+/* "use client";
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import Image from "next/image";
@@ -152,3 +152,4 @@ function PropertyCard({
     </div>
   );
 }
+ */
