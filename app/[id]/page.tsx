@@ -138,68 +138,62 @@ function PropertyCard({
   };
 
   return (
-    <div className="group relative">
-      <div className="relative aspect-[4/3] hover:scale-105 transition-all duration-300">
-        <Link
-          href={property.link}
-          target="_blank"
-          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 ">
+    <Link
+      href={property.link}
+      target="_blank"
+      className="hover:scale-105 transition-all duration-300 border-2 border-gray-200 shadow-md rounded-lg">
+      <div className="group relative">
+        <div className="relative aspect-[4/3] ">
           <Image
             src={property.imagen}
             alt={property.ubicacion}
             fill
-            className="object-cover rounded-xl"
+            className="object-cover rounded-lg"
           />
-        </Link>
-        <button
-          onClick={onFavoriteClick}
-          className="absolute top-3 right-3 hover:scale-110 transition-all duration-300 z-10">
-          <Heart
-            className={`w-6 h-6 ${property.favorite ? "fill-red-500 text-red-500" : "text-gray-100 fill-black/50"}`}
-          />
-        </button>
-      </div>
+          <button
+            onClick={onFavoriteClick}
+            className="absolute top-3 right-3 hover:scale-110 transition-all duration-300 z-10">
+            <Heart
+              className={`w-6 h-6 ${property.favorite ? " fill-red-500/90 border-white  text-white" : "text-gray-100 fill-black/50"}`}
+            />
+          </button>
+        </div>
 
-      <div className="mt-3 space-y-1">
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <h3 className="font-medium">{property.ubicacion}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {property.direccion}
+        <div className=" space-y-1 p-4">
+          <h3 className="font-medium text-md">{property.ubicacion}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {property.direccion}
+          </p>
+          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex items-center gap-1">
+              <HomeIcon className="w-4 h-4" />
+              <span>{getRoomsText(property.ambientes)}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <SquareIcon className="w-4 h-4" />
+              <span>{property.metros} m²</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <BedDoubleIcon className="w-4 h-4" />
+              <span>{property.dormitorios}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Bath className="w-4 h-4" />
+              <span>{property.banos}</span>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <p className="font-semibold text-sm">
+              $
+              {property.precio
+                .toLocaleString("es-AR", { maximumFractionDigits: 0 })
+                .replace(",", ".")}{" "}
+              {currencySymbol}
             </p>
           </div>
         </div>
-
-        <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-          <div className="flex items-center gap-1">
-            <HomeIcon className="w-4 h-4" />
-            <span>{getRoomsText(property.ambientes)}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <SquareIcon className="w-4 h-4" />
-            <span>{property.metros} m²</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <BedDoubleIcon className="w-4 h-4" />
-            <span>{property.dormitorios}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Bath className="w-4 h-4" />
-            <span>{property.banos}</span>
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center pt-1">
-          <p className="font-semibold">
-            $
-            {property.precio
-              .toLocaleString("es-AR", { maximumFractionDigits: 0 })
-              .replace(",", ".")}{" "}
-            {""}
-            {currencySymbol}
-          </p>
-        </div>
       </div>
-    </div>
+    </Link>
   );
 }
