@@ -139,7 +139,8 @@ export const signOutAction = async () => {
 };
 
 
-interface Client {
+export interface Client {
+  id?: string;
   name: string;
   email: string;
   phone: string;
@@ -158,7 +159,6 @@ interface InsertResult {
 export const addClient = async (client: Client): Promise<InsertResult> => {
   const supabase = await createClient();
   const { data: session, error: sessionError } = await supabase.auth.getSession();
-
 
   if (sessionError || !session?.session) {
     console.error("❌ No active session found or error fetching session:", sessionError);
@@ -202,51 +202,46 @@ export const FetchClients = async () => {
     .order('created_at', { ascending: false });
   if (error) {
     console.error('Error fetching accounts:', error);
-    return { data: null, error }; // Retorna null si hay error
+    return { data: null, error }; 
   }
-
-  
-  return { data: Accounts, error }; // Devuelve correctamente la data
+  return { data: Accounts, error };
 };
 
-
-
-export const uploadImage = async (file: File) => {
+export const EditClients = async (client: Client) => {    
   const supabase = await createClient();
+  const { data: user, error: userError } = await supabase.auth.getUser();
   
-  // Generar un nombre único para el archivo
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Math.random()}.${fileExt}`;
-  const filePath = `${fileName}`;
+  if (userError) {
+    console.error("Error fetching user:", userError);
+    return { error: userError };
+  }
 
-  // Subir el archivo al bucket 'images'
-  const { data, error } = await supabase.storage
-    .from('imagenes')
-    .upload(filePath, file);
+  // Remover el id del objeto de actualización ya que no debe actualizarse
+  const updatedClient = {
+    name: client.name,
+    email: client.email,
+    phone: client.phone,
+    barrio: client.barrio,
+    presupuesto: client.presupuesto,  // Mantener como string para coincidir con la interfaz
+    tipologia: client.tipologia,
+    ambientes: client.ambientes,       // Mantener como string para coincidir con la interfaz
+    operacion: client.operacion
+  };
+  console.log(updatedClient);
+  const { data, error } = await supabase
+    .from('Accounts')
+    .update(updatedClient)
+    .eq('id', client.id)
+    .eq('user_id', user?.user?.id)
+    .select();
 
   if (error) {
-    console.error('Error uploading image:', error);
-    return { error };
+    console.error('Error updating client:', error);
+    return { error };  // Modificado para mantener consistencia en el retorno
   }
 
-  // Obtener la URL pública de la imagen
-  const { data: { publicUrl } } = supabase.storage
-    .from('imagenes')
-    .getPublicUrl(filePath);
-
-  return { data: publicUrl };
+  return { data, error: null };
 };
-
-// Para obtener la imagen
-export const getImageUrl = async (path: string) => {
-  const supabase = await createClient();
-  const { data: { publicUrl } } = supabase.storage
-    .from('imagenes')
-    .getPublicUrl(path);
-  
-  return publicUrl;
-};
-
 
 interface Property {
   id: string;

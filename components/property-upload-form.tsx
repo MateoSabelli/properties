@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -11,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { addProperty } from "@/app/actions";
 
 interface PropertyUploadFormProps {
   onSubmit: (newProperty: any) => void;
@@ -26,7 +24,6 @@ export function PropertyUploadForm({
   onCancel,
   onClientAdded,
 }: PropertyUploadFormProps) {
-  const [currency, setCurrency] = useState<"USD" | "ARS">("USD");
   const [data, setData] = useState<any>({
     ubicacion: "",
     direccion: "",
@@ -35,9 +32,9 @@ export function PropertyUploadForm({
     ambientes: "",
     imagen: "",
     link: "",
-    descripcion: "",
     cliente: "",
   });
+  console.log(data);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -97,11 +94,11 @@ export function PropertyUploadForm({
             />
           </div>
           <div className="w-24">
-            <Label htmlFor="currency">Moneda</Label>
+            <Label htmlFor="moneda">Moneda</Label>
             <Select
-              value={currency}
-              onValueChange={(value: "USD" | "ARS") => setCurrency(value)}>
-              <SelectTrigger id="currency">
+              value={data.moneda}
+              onValueChange={(value) => handleSelectChange(value, "moneda")}>
+              <SelectTrigger id="moneda">
                 <SelectValue placeholder="Moneda" />
               </SelectTrigger>
               <SelectContent>
@@ -147,16 +144,6 @@ export function PropertyUploadForm({
             type="text"
             placeholder="Ej: https://www.google.com/image.jpg"
             value={data.link}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="md:col-span-2">
-          <Label htmlFor="descripcion">Descripción</Label>
-          <Textarea
-            id="descripcion"
-            name="descripcion"
-            placeholder="Describe la propiedad..."
-            value={data.descripcion}
             onChange={handleChange}
           />
         </div>

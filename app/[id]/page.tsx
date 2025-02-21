@@ -99,7 +99,7 @@ function PropertyCard({
 }: PropertyCardProps) {
   let currencySymbol = "";
   if (property.moneda === "USD") {
-    currencySymbol = "$";
+    currencySymbol = "U$S";
   } else {
     currencySymbol = "ARS";
   }
@@ -108,6 +108,8 @@ function PropertyCard({
     if (rooms === "0") return "Monoambiente";
     return `${rooms} ambientes`;
   };
+
+  const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
 
   return (
     <div className="group relative">
@@ -148,8 +150,10 @@ function PropertyCard({
 
         <div className="flex justify-between items-center pt-1">
           <p className="font-semibold">
-            {currencySymbol}
-            {property.precio.toLocaleString()}{" "}
+            {currencySymbol}{" "}
+            {property.precio
+              .toLocaleString("es-AR", { maximumFractionDigits: 0 })
+              .replace(",", ".")}
           </p>
         </div>
       </div>

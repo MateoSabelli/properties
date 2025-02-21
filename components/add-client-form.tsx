@@ -14,9 +14,14 @@ import { addClient } from "@/app/actions";
 interface AddClientFormProps {
   onCancel: () => void;
   onClientAdded: () => void;
+  onClientEdited: () => void;
 }
 
-export function AddClientForm({ onCancel, onClientAdded }: AddClientFormProps) {
+export function AddClientForm({
+  onCancel,
+  onClientAdded,
+  onClientEdited,
+}: AddClientFormProps) {
   const [clients, setClients] = useState({
     name: "",
     email: "",
@@ -27,6 +32,7 @@ export function AddClientForm({ onCancel, onClientAdded }: AddClientFormProps) {
     ambientes: "",
     operacion: "",
   });
+  const [currency, setCurrency] = useState<"USD" | "ARS">("USD");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setClients({ ...clients, [e.target.id]: e.target.value });
@@ -106,19 +112,37 @@ export function AddClientForm({ onCancel, onClientAdded }: AddClientFormProps) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Venta">Venta</SelectItem>
+                <SelectItem value="Compra">Compra</SelectItem>
                 <SelectItem value="Alquiler">Alquiler</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <div>
-            <Label htmlFor="presupuesto">Presupuesto</Label>
-            <Input
-              id="presupuesto"
-              type="number"
-              placeholder="Ingrese el presupuesto"
-              value={clients.presupuesto}
-              onChange={handleChange}
-            />
+          <div className="flex space-x-2">
+            <div className="flex-grow">
+              <Label htmlFor="presupuesto">Presupuesto</Label>
+              <Input
+                id="presupuesto"
+                name="presupuesto"
+                type="number"
+                placeholder="Ej: 200000"
+                value={clients.presupuesto}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="w-24">
+              <Label htmlFor="currency">Moneda</Label>
+              <Select
+                value={currency}
+                onValueChange={(value: "USD" | "ARS") => setCurrency(value)}>
+                <SelectTrigger id="currency">
+                  <SelectValue placeholder="Moneda" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="USD">USD</SelectItem>
+                  <SelectItem value="ARS">ARS</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div>
             <Label htmlFor="tipologia">Tipología</Label>
@@ -146,13 +170,20 @@ export function AddClientForm({ onCancel, onClientAdded }: AddClientFormProps) {
           </div>
           <div>
             <Label htmlFor="ambientes">Ambientes</Label>
-            <Input
-              id="ambientes"
-              type="number"
-              placeholder="Número de ambientes"
-              value={clients.ambientes}
-              onChange={handleChange}
-            />
+            <Select
+              onValueChange={(value) => handleSelectChange(value, "ambientes")}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccione la tipología" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">Monoambiente</SelectItem>
+                <SelectItem value="2">2 Ambientes</SelectItem>
+                <SelectItem value="3">3 Ambientes</SelectItem>
+                <SelectItem value="4">4 Ambientes</SelectItem>
+                <SelectItem value="5">5 Ambientes</SelectItem>
+                <SelectItem value="6">6 Ambientes</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <div className="flex justify-end space-x-2">

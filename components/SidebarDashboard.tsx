@@ -15,6 +15,7 @@ import { Button } from "./ui/button";
 import { FetchClients, FetchProperties, signOutAction } from "@/app/actions";
 import { Properties } from "./properties";
 import Clients from "./Clients";
+import DashboardPage from "./Dashboard";
 
 interface SidebarDemoProps {
   user: {
@@ -71,7 +72,17 @@ export function SidebarDemo({ user }: SidebarDemoProps) {
     },
   ];
   const [open, setOpen] = useState(false);
-  const [activeSideLink, setActiveSideLink] = useState("Dashboard");
+  const [activeSideLink, setActiveSideLink] = useState(() => {
+    // Intentar obtener el valor guardado en localStorage
+    const savedLink = localStorage.getItem("lastActiveLink");
+    // Si existe un valor guardado, usarlo; si no, usar "Dashboard"
+    return savedLink || "Dashboard";
+  });
+
+  // Actualizar localStorage cuando cambie activeSideLink
+  useEffect(() => {
+    localStorage.setItem("lastActiveLink", activeSideLink);
+  }, [activeSideLink]);
 
   const handleClick = (link: string) => {
     setActiveSideLink(link);
@@ -210,7 +221,12 @@ const Dashboard = ({ user, activeSideLink }: DashboardProps) => {
   const renderContent = () => {
     switch (activeSideLink) {
       case "Dashboard":
-        return <></>;
+        return (
+          <DashboardPage
+            accountsClients={accountsClients}
+            propertiesData={propertiesData}
+          />
+        );
       case "Clientes":
         return (
           <Clients
