@@ -251,9 +251,12 @@ interface Property {
   precio: number;
   moneda: string;
   ambientes: string;
+  metros: number;
+  dormitorios: number;
+  banos: number;
   imagen: string;
   link: string;
-  descripcion?: string;
+  favorite: boolean;
 }
 
 
@@ -288,7 +291,11 @@ export const addProperty = async (property: Property): Promise<InsertResult> => 
       moneda: property.moneda,
       ambientes: property.ambientes,
       imagen: property.imagen,
-      link: property.link
+      link: property.link,
+      metros: property.metros,
+      dormitorios: property.dormitorios,
+      banos: property.banos,
+      favorite: property.favorite
     }])
     .select();
 
@@ -352,7 +359,31 @@ export const updateProperty = async (property: Property): Promise<InsertResult> 
       moneda: property.moneda,
       ambientes: property.ambientes,
       imagen: property.imagen,
-      link: property.link
+      link: property.link,
+      metros: property.metros,
+      dormitorios: property.dormitorios,
+      banos: property.banos,
+      favorite: property.favorite
+    })
+    .eq('id', property.id)
+    .select();
+
+  console.log("data");
+  console.log(data);
+  if (error) {
+    console.error("Error updating property:", error);
+    return { error };
+  }
+
+  return { data };
+};
+export const updatePropertyFavorite = async (property: Property): Promise<InsertResult> => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('properties')
+    .update({ 
+      favorite: property.favorite
     })
     .eq('id', property.id)
     .select();

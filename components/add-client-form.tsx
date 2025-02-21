@@ -33,6 +33,7 @@ export function AddClientForm({
     operacion: "",
   });
   const [currency, setCurrency] = useState<"USD" | "ARS">("USD");
+  const [phonePrefix, setPhonePrefix] = useState("+54");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setClients({ ...clients, [e.target.id]: e.target.value });
@@ -43,11 +44,15 @@ export function AddClientForm({
   };
 
   const handleAddClient = async (e: React.FormEvent) => {
-    e.preventDefault(); // Evita recargar la página
+    e.preventDefault();
 
-    console.log("Cliente a guardar:", clients);
+    // Combinar el prefijo seleccionado con el número ingresado
+    const fullPhone = `${phonePrefix} ${clients.phone}`;
+    const clientToSave = { ...clients, phone: fullPhone };
 
-    const response = await addClient(clients);
+    console.log("Cliente a guardar:", clientToSave);
+
+    const response = await addClient(clientToSave);
 
     if (response?.error) {
       console.error("Error al agregar cliente:", response.error);
@@ -69,10 +74,7 @@ export function AddClientForm({
   };
 
   return (
-    <div className="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 mt-4">
-      <h3 className="text-lg font-semibold mb-4 dark:text-white">
-        Agregar Nuevo Cliente
-      </h3>
+    <div className="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 my-4">
       <form className="space-y-4" onSubmit={handleAddClient}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -96,12 +98,35 @@ export function AddClientForm({
           </div>
           <div>
             <Label htmlFor="phone">Teléfono</Label>
-            <Input
-              id="phone"
-              placeholder="123-456-7890"
-              value={clients.phone}
-              onChange={handleChange}
-            />
+            <div className="flex">
+              <Select onValueChange={(value) => setPhonePrefix(value)}>
+                <SelectTrigger className="w-24">
+                  <SelectValue placeholder={phonePrefix} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="+1">Estados Unidos (+1)</SelectItem>
+                  <SelectItem value="+34">España (+34)</SelectItem>
+                  <SelectItem value="+52">México (+52)</SelectItem>
+                  <SelectItem value="+54">Argentina (+54)</SelectItem>
+                  <SelectItem value="+55">Brasil (+55)</SelectItem>
+                  <SelectItem value="+56">Chile (+56)</SelectItem>
+                  <SelectItem value="+57">Colombia (+57)</SelectItem>
+                  <SelectItem value="+58">Venezuela (+58)</SelectItem>
+                  <SelectItem value="+591">Bolivia (+591)</SelectItem>
+                  <SelectItem value="+598">Uruguay (+598)</SelectItem>
+                  <SelectItem value="+61">Australia (+61)</SelectItem>
+
+                  {/* Agrega más opciones de país según sea necesario */}
+                </SelectContent>
+              </Select>
+              <Input
+                id="phone"
+                placeholder="123-456-7890"
+                value={clients.phone}
+                onChange={handleChange}
+                className="ml-2"
+              />
+            </div>
           </div>
           <div>
             <Label htmlFor="operacion">Tipo de Operación</Label>
@@ -186,7 +211,7 @@ export function AddClientForm({
             </Select>
           </div>
         </div>
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-between sm:justify-end space-x-2">
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancelar
           </Button>

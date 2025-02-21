@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -24,11 +23,13 @@ interface PropertyEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   property: any;
+  accountsClients: any[] | null;
   onUpdate: (property: any) => void;
 }
 
 export function PropertyEditModal({
   isOpen,
+  accountsClients,
   onClose,
   property,
   onUpdate,
@@ -39,11 +40,14 @@ export function PropertyEditModal({
     precio: property.precio || 0,
     moneda: property.moneda || "USD",
     ambientes: property.ambientes || "",
+    metros: property.metros || 0,
+    dormitorios: property.dormitorios || 0,
+    banos: property.banos || 0,
     imagen: property.imagen || "",
     link: property.link || "",
-    descripcion: property.descripcion || "",
     cliente: property.cliente || "",
     id: property.id || "",
+    favorite: property.favorite || false,
   });
 
   useEffect(() => {
@@ -53,11 +57,14 @@ export function PropertyEditModal({
       precio: property.precio || 0,
       moneda: property.moneda || "USD",
       ambientes: property.ambientes || "",
+      metros: property.metros || 0,
+      dormitorios: property.dormitorios || 0,
+      banos: property.banos || 0,
       imagen: property.imagen || "",
       link: property.link || "",
-      descripcion: property.descripcion || "",
       cliente: property.cliente || "",
       id: property.id || "",
+      favorite: property.favorite || false,
     });
   }, [property]);
 
@@ -92,13 +99,31 @@ export function PropertyEditModal({
         <DialogHeader>
           <DialogTitle>Editar Propiedad</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleUpdateProperty} className="space-y-4">
+        <form onSubmit={handleUpdateProperty} className=" space-y-4 ">
           <div>
             <Label htmlFor="ubicacion">Ubicación</Label>
             <Input
               id="ubicacion"
               name="ubicacion"
               value={propertyEdit.ubicacion}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <Label htmlFor="link">Link de la propiedad</Label>
+            <Input
+              id="link"
+              name="link"
+              value={propertyEdit.link}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <Label htmlFor="imagen">Link de la imagen</Label>
+            <Input
+              id="imagen"
+              name="imagen"
+              value={propertyEdit.imagen}
               onChange={handleChange}
             />
           </div>
@@ -152,21 +177,57 @@ export function PropertyEditModal({
                 <SelectItem value="2">2 ambientes</SelectItem>
                 <SelectItem value="3">3 ambientes</SelectItem>
                 <SelectItem value="4">4 ambientes</SelectItem>
+                <SelectItem value="5">5 ambientes</SelectItem>
+                <SelectItem value="6">6 ambientes</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label htmlFor="descripcion">Descripción</Label>
-            <Textarea
-              id="descripcion"
-              name="descripcion"
-              value={propertyEdit.descripcion}
+            <Label htmlFor="metros">Metros</Label>
+            <Input
+              id="metros"
+              name="metros"
+              type="number"
+              value={propertyEdit.metros}
               onChange={handleChange}
             />
           </div>
           <div>
-            <Label>Imágenes</Label>
-            {/* <ImageUpload images={editedProperty.images} setImages={handleImageChange} /> */}
+            <Label htmlFor="dormitorios">Dormitorios</Label>
+            <Input
+              id="dormitorios"
+              name="dormitorios"
+              type="number"
+              value={propertyEdit.dormitorios}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <Label htmlFor="banos">Baños</Label>
+            <Input
+              id="banos"
+              name="banos"
+              type="number"
+              value={propertyEdit.banos}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <Label htmlFor="cliente">Cliente</Label>
+            <Select
+              value={propertyEdit.cliente}
+              onValueChange={(value) => handleSelectChange(value, "cliente")}>
+              <SelectTrigger id="cliente">
+                <SelectValue placeholder="Selecciona el cliente" />
+              </SelectTrigger>
+              <SelectContent>
+                {(accountsClients || []).map((client) => (
+                  <SelectItem key={client.name} value={client.name}>
+                    {client.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <DialogFooter>
             <Button type="submit">Guardar Cambios</Button>

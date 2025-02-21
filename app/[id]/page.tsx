@@ -2,10 +2,20 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FetchPropertiesByClient } from "../actions";
+import { FetchPropertiesByClient, updatePropertyFavorite } from "../actions";
 import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Home, MapPin, Bed, DollarSign } from "lucide-react";
+import {
+  Heart,
+  Home,
+  MapPin,
+  Bed,
+  DollarSign,
+  HomeIcon,
+  BedDoubleIcon,
+  SquareIcon,
+  Bath,
+} from "lucide-react";
 
 export default function ClientProperties() {
   const searchParams = useSearchParams();
@@ -30,6 +40,20 @@ export default function ClientProperties() {
     fetchProperties();
   }, [clientName]);
 
+  const handleFavoriteClick = async (property: any) => {
+    const updatedProperty = {
+      ...property,
+      favorite: !property.favorite,
+    };
+
+    const success = await updatePropertyFavorite(updatedProperty);
+    if (success && properties) {
+      setProperties(
+        properties.map((p) => (p.id === property.id ? updatedProperty : p))
+      );
+    }
+  };
+
   if (!clientName) {
     return <div>No se especificó un cliente</div>;
   }
@@ -38,7 +62,7 @@ export default function ClientProperties() {
     <div className="container mx-auto py-8 px-4">
       <div className="mb-6 border-b pb-4 flex flex-col sm:flex-row justify-between items-center">
         <h1 className="text-2xl font-semibold mb-3">
-          Propiedades para {decodeURIComponent(clientName)}
+          Busqueda para {decodeURIComponent(clientName)}
         </h1>
         <div className="flex gap-2 flex-wrap">
           <Badge variant="secondary">
@@ -66,8 +90,8 @@ export default function ClientProperties() {
           <PropertyCard
             key={property.id}
             property={property}
-            isFavorite={false}
-            onFavoriteClick={() => {}}
+            isFavorite={property.favorite}
+            onFavoriteClick={() => handleFavoriteClick(property)}
           />
         ))}
       </div>
@@ -83,10 +107,14 @@ interface PropertyCardProps {
     precio: number;
     moneda: "USD" | "ARS";
     ambientes: string;
+    metros: number;
+    dormitorios: number;
+    banos: number;
     imagen: string;
     link: string;
     descripcion: string;
     cliente: string;
+    favorite: boolean;
   };
   isFavorite: boolean;
   onFavoriteClick: () => void;
@@ -99,7 +127,7 @@ function PropertyCard({
 }: PropertyCardProps) {
   let currencySymbol = "";
   if (property.moneda === "USD") {
-    currencySymbol = "U$S";
+    currencySymbol = "USD";
   } else {
     currencySymbol = "ARS";
   }
@@ -108,8 +136,6 @@ function PropertyCard({
     if (rooms === "0") return "Monoambiente";
     return `${rooms} ambientes`;
   };
-
-  const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
 
   return (
     <div className="group relative">
@@ -127,9 +153,9 @@ function PropertyCard({
         </Link>
         <button
           onClick={onFavoriteClick}
-          className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-colors z-10">
+          className="absolute top-3 right-3 hover:scale-110 transition-all duration-300 z-10">
           <Heart
-            className={`w-5 h-5 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"}`}
+            className={`w-6 h-6 ${property.favorite ? "fill-red-500 text-red-500" : "text-gray-100 fill-black/50"}`}
           />
         </button>
       </div>
@@ -144,16 +170,33 @@ function PropertyCard({
           </div>
         </div>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {getRoomsText(property.ambientes)}
-        </p>
+        <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+          <div className="flex items-center gap-1">
+            <HomeIcon className="w-4 h-4" />
+            <span>{getRoomsText(property.ambientes)}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <SquareIcon className="w-4 h-4" />
+            <span>{property.metros} m²</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <BedDoubleIcon className="w-4 h-4" />
+            <span>{property.dormitorios}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Bath className="w-4 h-4" />
+            <span>{property.banos}</span>
+          </div>
+        </div>
 
         <div className="flex justify-between items-center pt-1">
           <p className="font-semibold">
-            {currencySymbol}{" "}
+            $
             {property.precio
               .toLocaleString("es-AR", { maximumFractionDigits: 0 })
-              .replace(",", ".")}
+              .replace(",", ".")}{" "}
+            {""}
+            {currencySymbol}
           </p>
         </div>
       </div>

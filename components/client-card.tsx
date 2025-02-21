@@ -8,6 +8,7 @@ import {
   Mail,
   Eye,
   Edit2,
+  Newspaper,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
@@ -65,7 +66,6 @@ export function ClientCard({
     e.preventDefault();
     try {
       setShowAddClientForm(true);
-
       const newClientData = {
         id: id,
         name: name,
@@ -77,11 +77,6 @@ export function ClientCard({
         ambientes: ambientes.toString(),
         operacion: operacion,
       };
-
-      // Actualiza el estado si lo necesitas para el renderizado
-      /* setClientToEdit(newClientData); */
-
-      // Llama a EditClients pasando directamente el objeto actualizado
       const response = await EditClients(newClientData);
       if (response.error) {
         throw response.error;
@@ -100,9 +95,15 @@ export function ClientCard({
     }
   };
 
-  console.log(clientToEdit);
+  const isEmpty = (value: string | number) => {
+    if (value === "" || value === 0) {
+      return "No hay información";
+    }
+    return value;
+  };
+
   return (
-    <div className="relative group block hover:scale-105 transition-all pb-4">
+    <div className="relative group block transition-all pb-4">
       <Card className="w-full max-w-sm hover:bg-black/70 transition-all duration-300 relative">
         <div className="absolute inset-0 flex items-center z-20 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 gap-2">
           <Button
@@ -137,7 +138,7 @@ export function ClientCard({
             <h3 className="text-lg font-semibold ">{name}</h3>
             <Badge
               variant="secondary"
-              className="bg-orange-400 hover:bg-orange-400 text-white">
+              className="bg-blue-400 hover:bg-blue-400 text-white">
               En proceso
             </Badge>
           </div>
@@ -147,33 +148,46 @@ export function ClientCard({
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Mail className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">{email}</span>
+                  <span className="text-sm text-gray-600">
+                    {isEmpty(email)}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">{phone}</span>
+                  <span className="text-sm text-gray-600">
+                    {isEmpty(phone)}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">{barrio}</span>
+                  <span className="text-sm text-gray-600">
+                    {isEmpty(barrio)}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Home className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">{tipologia}</span>
+                  <span className="text-sm text-gray-600">
+                    {isEmpty(tipologia)}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">{presupuesto}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-600">
-                    {ambientes} ambientes
+                    {isEmpty(presupuesto)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">{operacion}</span>
+                  <span className="text-sm text-gray-600">
+                    {isEmpty(ambientes)}{" "}
+                    {ambientes === 1 ? "ambiente" : "ambientes"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Newspaper className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600">
+                    {isEmpty(operacion)}
+                  </span>
                 </div>
               </div>
             </div>

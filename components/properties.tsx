@@ -1,7 +1,5 @@
 "use client";
-
 import { useState } from "react";
-import { Heart, Star, Edit } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -9,6 +7,7 @@ import { PropertyUploadForm } from "./property-upload-form";
 import { PropertyEditModal } from "./property-edit-modal";
 import { addProperty, FetchProperties, updateProperty } from "@/app/actions";
 import { Skeleton } from "./ui/skeleton";
+import { HomeIcon, SquareIcon, BedDoubleIcon, Bath, Edit } from "lucide-react";
 
 type Property = {
   cliente: string;
@@ -16,6 +15,10 @@ type Property = {
   direccion: string;
   precio: number;
   moneda: "USD" | "ARS";
+  ambientes: string;
+  metros: number;
+  dormitorios: number;
+  banos: number;
   descripcion: string;
   link: string;
   isFavorite: boolean;
@@ -74,14 +77,14 @@ export function Properties({
   console.log(properties);
   return (
     <div className="container mx-auto py-8 px-4 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold dark:text-white">
+      <div className="flex justify-between items-center mb-6 sm:flex-row flex-col gap-4">
+        <h2 className="text-3xl font-bold dark:text-white w-full">
           Dashboard de propiedades
         </h2>
         <Button
-          className="bg-black"
+          className="bg-black w-full sm:w-auto"
           onClick={() => setShowAddPropertyForm(!showAddPropertyForm)}>
-          {showAddPropertyForm ? "Cerrar" : "Agregar Nueva Propiedad"}
+          {showAddPropertyForm ? "Cerrar" : "Agregar Propiedad"}
         </Button>
       </div>
 
@@ -136,6 +139,7 @@ export function Properties({
 
       {editingProperty && (
         <PropertyEditModal
+          accountsClients={accountsClients}
           onUpdate={handleUpdateProperty}
           isOpen={!!editingProperty}
           onClose={() => setEditingProperty(null)}
@@ -154,6 +158,9 @@ interface PropertyCardProps {
     precio: number;
     moneda: "USD" | "ARS";
     ambientes: string;
+    metros: number;
+    dormitorios: number;
+    banos: number;
     imagen: string;
     link: string;
     descripcion: string;
@@ -172,9 +179,9 @@ function PropertyCard({
 }: PropertyCardProps) {
   let currencySymbol = "";
   if (property.moneda === "USD") {
-    currencySymbol = "U$S";
+    currencySymbol = "USD";
   } else {
-    currencySymbol = "AR$";
+    currencySymbol = "ARS";
   }
 
   const getRoomsText = (rooms: string) => {
@@ -195,35 +202,42 @@ function PropertyCard({
             className="object-cover rounded-xl"
           />
         </Link>
-        <button
-          onClick={onFavoriteClick}
-          className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-colors z-10">
-          <Heart
-            className={`w-5 h-5 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"}`}
-          />
-        </button>
       </div>
-
       <div className="mt-3 space-y-1">
         <div className="flex justify-between items-start">
           <div className="flex-1">
-            <h3 className="font-medium">{property.ubicacion}</h3>
+            <h3 className="font-medium text-md">{property.ubicacion}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {property.direccion}
             </p>
           </div>
         </div>
+        <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+          <div className="flex items-center gap-1">
+            <HomeIcon className="w-4 h-4" />
+            <span>{getRoomsText(property.ambientes)}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <SquareIcon className="w-4 h-4" />
+            <span>{property.metros} m²</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <BedDoubleIcon className="w-4 h-4" />
+            <span>{property.dormitorios}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Bath className="w-4 h-4" />
+            <span>{property.banos}</span>
+          </div>
+        </div>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {getRoomsText(property.ambientes)}
-        </p>
-
-        <div className="flex justify-between items-center pt-1">
-          <p className="font-semibold">
-            {currencySymbol}{" "}
+        <div className="flex justify-between items-center">
+          <p className="font-semibold text-sm">
+            $
             {property.precio
               .toLocaleString("es-AR", { maximumFractionDigits: 0 })
-              .replace(",", ".")}
+              .replace(",", ".")}{" "}
+            {currencySymbol}
           </p>
           <div className="flex gap-2">
             <button

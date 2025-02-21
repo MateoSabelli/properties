@@ -30,6 +30,9 @@ export function PropertyUploadForm({
     precio: 0,
     moneda: "USD",
     ambientes: "",
+    metros: 0,
+    dormitorios: 0,
+    banos: 0,
     imagen: "",
     link: "",
     cliente: "",
@@ -126,6 +129,40 @@ export function PropertyUploadForm({
             </SelectContent>
           </Select>
         </div>
+        <div>
+          <Label htmlFor="metros">Metros</Label>
+          <Input
+            id="metros"
+            name="metros"
+            type="number"
+            placeholder="Ej: 100"
+            value={data.metros}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <Label htmlFor="dormitorios">Dormitorios</Label>
+          <Input
+            id="dormitorios"
+            name="dormitorios"
+            type="number"
+            placeholder="Ej: 2"
+            value={data.dormitorios}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <Label htmlFor="banos">Baños</Label>
+          <Input
+            id="banos"
+            name="banos"
+            type="number"
+            placeholder="Ej: 2"
+            value={data.banos}
+            onChange={handleChange}
+          />
+        </div>
+
         <div className="flex-grow">
           <Label htmlFor="imagen">Imagen de la propiedad</Label>
           <Input

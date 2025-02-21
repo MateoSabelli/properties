@@ -10,6 +10,21 @@ const nextConfig: NextConfig = {
         hostname: "imgar.zonapropcdn.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "static1.sosiva451.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "http2.mlstatic.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.21online.lat",
+        pathname: "/**",
+      },
     ],
   },
 };
