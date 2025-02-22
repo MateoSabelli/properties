@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { AddClientForm } from "./add-client-form";
 import { ClientCard } from "./client-card";
 import { Skeleton } from "./ui/skeleton";
-import { UserRoundPlus, UserRoundX } from "lucide-react";
+import { Filter, UserRoundPlus, UserRoundX } from "lucide-react";
+import { Input } from "./ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { Label } from "./ui/label";
 
 export default function Clients({
   showAddClientForm,
@@ -16,6 +25,10 @@ export default function Clients({
   accountsClients: any[] | null;
   fetchClients: () => void;
 }) {
+  const [estado, setEstado] = useState("Todos");
+  const handleSelectChange = (value: string, field: string) => {
+    setEstado(value);
+  };
   return (
     <div className="container mx-auto py-8 px-4 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none">
       <div className=" flex sm:flex-row flex-col  justify-between items-center mb-6 w-full gap-5">
@@ -53,17 +66,38 @@ export default function Clients({
           />
         )}
         <div className="overflow-x-auto  h-[calc(100vh-4rem)] overflow-y-scroll scrollbar-none ">
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-semibold">Estado</h3>
+              <Select
+                onValueChange={(value) => handleSelectChange(value, "estado")}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Seleccione el estado" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Todos">Todos</SelectItem>
+                  <SelectItem value="Busqueda">Busqueda</SelectItem>
+                  <SelectItem value="En proceso">En proceso</SelectItem>
+                  <SelectItem value="Finalizado">Finalizado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-5 ">
             {accountsClients ? (
               accountsClients.length > 0 ? (
-                accountsClients.map((client) => (
-                  <ClientCard
-                    key={client.id}
-                    {...client}
-                    setShowAddClientForm={setShowAddClientForm}
-                    fetchClients={fetchClients}
-                  />
-                ))
+                accountsClients
+                  .filter(
+                    (client) => estado === "Todos" || client.estado === estado
+                  )
+                  .map((client) => (
+                    <ClientCard
+                      key={client.id}
+                      {...client}
+                      setShowAddClientForm={setShowAddClientForm}
+                      fetchClients={fetchClients}
+                    />
+                  ))
               ) : (
                 <div className="col-span-full text-center py-8">
                   <p className="text-gray-500 dark:text-gray-400">

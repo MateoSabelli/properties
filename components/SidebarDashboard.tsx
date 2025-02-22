@@ -16,6 +16,7 @@ import { FetchClients, FetchProperties, signOutAction } from "@/app/actions";
 import { Properties } from "./properties";
 import Clients from "./Clients";
 import DashboardPage from "./Dashboard";
+import Configuracion from "./Configuracion";
 
 interface SidebarDemoProps {
   user: {
@@ -66,6 +67,7 @@ export function SidebarDemo({ user }: SidebarDemoProps) {
     {
       label: "Logout",
       href: "#",
+      onClick: signOutAction,
       icon: (
         <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
@@ -210,14 +212,6 @@ const Dashboard = ({ user, activeSideLink }: DashboardProps) => {
     FetchProperties();
   }, [user?.id]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // Aquí iría la lógica para enviar los datos del formulario
-    console.log("Formulario enviado");
-  };
-
-  // En tu componente
-
   const renderContent = () => {
     switch (activeSideLink) {
       case "Dashboard":
@@ -248,10 +242,9 @@ const Dashboard = ({ user, activeSideLink }: DashboardProps) => {
         return <div className="p-6">Aquí va el perfil del usuario</div>;
 
       case "Settings":
-        return <div className="p-6">Aquí están las configuraciones</div>;
+        return <Configuracion />;
       case "Logout":
-        // Puedes opcionalmente manejar el logout como acción directa sin renderizar contenido
-        return <div className="p-6">Cerrando Sesión...</div>;
+        return <p>Cerrando sesion...</p>;
       default:
         return <div className="p-6">Seleccione una opción</div>;
     }

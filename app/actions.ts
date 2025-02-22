@@ -149,6 +149,7 @@ export interface Client {
   tipologia: string;
   ambientes: string;
   operacion: string;
+  estado: string;
 }
 
 interface InsertResult {
@@ -177,7 +178,7 @@ export const addClient = async (client: Client): Promise<InsertResult> => {
   // Intentar la inserción con el mismo UUID
   const { data, error } = await supabase
     .from('Accounts')
-    .insert([{ user_id: user?.user?.id, name: client.name, email: client.email, phone: client.phone, barrio: client.barrio, presupuesto: client.presupuesto, tipologia: client.tipologia, ambientes: client.ambientes, operacion: client.operacion }])
+    .insert([{ user_id: user?.user?.id, name: client.name, email: client.email, phone: client.phone, barrio: client.barrio, presupuesto: client.presupuesto, tipologia: client.tipologia, ambientes: client.ambientes, operacion: client.operacion, estado: client.estado }])
     .select();
 
   if (error) {
@@ -225,7 +226,8 @@ export const EditClients = async (client: Client) => {
     presupuesto: client.presupuesto,  // Mantener como string para coincidir con la interfaz
     tipologia: client.tipologia,
     ambientes: client.ambientes,       // Mantener como string para coincidir con la interfaz
-    operacion: client.operacion
+    operacion: client.operacion,
+    estado: client.estado
   };
   console.log(updatedClient);
   const { data, error } = await supabase
@@ -379,7 +381,7 @@ export const updateProperty = async (property: Property): Promise<InsertResult> 
 };
 export const updatePropertyFavorite = async (property: Property): Promise<InsertResult> => {
   const supabase = await createClient();
-
+  
   const { data, error } = await supabase
     .from('properties')
     .update({ 

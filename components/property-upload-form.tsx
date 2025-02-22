@@ -18,13 +18,27 @@ interface PropertyUploadFormProps {
   onClientAdded: () => void;
 }
 
+interface PropertyData {
+  ubicacion: string;
+  direccion: string;
+  precio: number;
+  moneda: "USD" | "ARS";
+  ambientes: string;
+  metros: number;
+  dormitorios: number;
+  banos: number;
+  imagen: string;
+  link: string;
+  cliente: string;
+}
+
 export function PropertyUploadForm({
   onSubmit,
   accountsClients,
   onCancel,
   onClientAdded,
 }: PropertyUploadFormProps) {
-  const [data, setData] = useState<any>({
+  const [data, setData] = useState<PropertyData>({
     ubicacion: "",
     direccion: "",
     precio: 0,
@@ -37,7 +51,9 @@ export function PropertyUploadForm({
     link: "",
     cliente: "",
   });
-  console.log(data);
+
+  const getInputValue = (value: number) =>
+    value === 0 ? "" : value.toString();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -92,7 +108,7 @@ export function PropertyUploadForm({
               name="precio"
               type="number"
               placeholder="Ej: 200000"
-              value={data.precio}
+              value={getInputValue(data.precio)}
               onChange={handleChange}
             />
           </div>
@@ -112,20 +128,19 @@ export function PropertyUploadForm({
           </div>
         </div>
         <div>
-          <Label htmlFor="rooms">Ambientes</Label>
+          <Label htmlFor="ambientes">Ambientes</Label>
           <Select
-            name="rooms"
-            defaultValue="1"
             onValueChange={(value) => handleSelectChange(value, "ambientes")}>
-            <SelectTrigger id="rooms">
-              <SelectValue placeholder="Selecciona los ambientes" />
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Seleccione la tipología" />
             </SelectTrigger>
-
             <SelectContent>
               <SelectItem value="0">Monoambiente</SelectItem>
-              <SelectItem value="2">2 ambientes</SelectItem>
-              <SelectItem value="3">3 ambientes</SelectItem>
-              <SelectItem value="4">4 ambientes</SelectItem>
+              <SelectItem value="2">2 Ambientes</SelectItem>
+              <SelectItem value="3">3 Ambientes</SelectItem>
+              <SelectItem value="4">4 Ambientes</SelectItem>
+              <SelectItem value="5">5 Ambientes</SelectItem>
+              <SelectItem value="6">6 Ambientes</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -136,7 +151,7 @@ export function PropertyUploadForm({
             name="metros"
             type="number"
             placeholder="Ej: 100"
-            value={data.metros}
+            value={getInputValue(data.metros)}
             onChange={handleChange}
           />
         </div>
@@ -147,7 +162,7 @@ export function PropertyUploadForm({
             name="dormitorios"
             type="number"
             placeholder="Ej: 2"
-            value={data.dormitorios}
+            value={getInputValue(data.dormitorios)}
             onChange={handleChange}
           />
         </div>
@@ -158,7 +173,7 @@ export function PropertyUploadForm({
             name="banos"
             type="number"
             placeholder="Ej: 2"
-            value={data.banos}
+            value={getInputValue(data.banos)}
             onChange={handleChange}
           />
         </div>
@@ -185,7 +200,7 @@ export function PropertyUploadForm({
           />
         </div>
 
-        <div className="md:col-span-2">
+        <div className="flex-grow">
           <Label htmlFor="client">Asociar a Cliente</Label>
           <Select
             value={data.cliente}

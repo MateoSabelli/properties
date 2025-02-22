@@ -31,6 +31,7 @@ export function AddClientForm({
     tipologia: "",
     ambientes: "",
     operacion: "",
+    estado: "",
   });
   const [currency, setCurrency] = useState<"USD" | "ARS">("USD");
   const [phonePrefix, setPhonePrefix] = useState("+54");
@@ -69,6 +70,7 @@ export function AddClientForm({
         tipologia: "",
         ambientes: "",
         operacion: "",
+        estado: "",
       });
     }
   };
@@ -207,6 +209,20 @@ export function AddClientForm({
                 <SelectItem value="4">4 Ambientes</SelectItem>
                 <SelectItem value="5">5 Ambientes</SelectItem>
                 <SelectItem value="6">6 Ambientes</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="estado">Estado</Label>
+            <Select
+              onValueChange={(value) => handleSelectChange(value, "estado")}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccione la tipología" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Busqueda">Busqueda</SelectItem>
+                <SelectItem value="En proceso">En proceso</SelectItem>
+                <SelectItem value="Finalizado">Finalizado</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -39,11 +39,13 @@ export function ClientEditModal({
     email: client.email,
     phone: client.phone,
     barrio: client.barrio,
+    moneda: client.moneda,
     presupuesto: client.presupuesto,
     tipologia: client.tipologia,
     ambientes: client.ambientes,
     operacion: client.operacion,
     id: client.id,
+    estado: client.estado,
   });
 
   useEffect(() => {
@@ -52,11 +54,13 @@ export function ClientEditModal({
       email: client.email || "",
       phone: client.phone || "",
       barrio: client.barrio || "",
+      moneda: client.moneda || "",
       presupuesto: client.presupuesto || 0,
       tipologia: client.tipologia || "",
       ambientes: client.ambientes || "",
       operacion: client.operacion || "",
       id: client.id || "",
+      estado: client.estado || "",
     });
   }, [client]);
 
@@ -79,10 +83,12 @@ export function ClientEditModal({
         email: clientEdit.email,
         phone: clientEdit.phone,
         barrio: clientEdit.barrio,
+        moneda: clientEdit.moneda,
         presupuesto: clientEdit.presupuesto,
         tipologia: clientEdit.tipologia,
         ambientes: clientEdit.ambientes,
         operacion: clientEdit.operacion,
+        estado: clientEdit.estado,
       };
 
       // Actualiza el estado si lo necesitas para el renderizado
@@ -135,26 +141,33 @@ export function ClientEditModal({
               onChange={handleChange}
             />
           </div>
+          <div>
+            <Label htmlFor="phone">Teléfono</Label>
+            <Input
+              id="phone"
+              name="phone"
+              value={clientEdit.phone}
+              onChange={handleChange}
+            />
+          </div>
           <div className="flex space-x-2">
             <div className="flex-grow">
-              <Label htmlFor="phone">Teléfono</Label>
+              <Label htmlFor="presupuesto">Presupuesto</Label>
               <Input
-                id="phone"
-                name="phone"
+                id="presupuesto"
+                name="presupuesto"
                 type="number"
-                value={clientEdit.phone}
+                value={clientEdit.presupuesto}
                 onChange={handleChange}
               />
             </div>
             <div className="w-24">
-              <Label htmlFor="barrio">Barrio</Label>
+              <Label htmlFor="moneda">Moneda</Label>
               <Select
-                value={clientEdit.barrio}
-                onValueChange={(value) =>
-                  handleSelectChange(value, "tipologia")
-                }>
-                <SelectTrigger id="barrio">
-                  <SelectValue placeholder="Barrio" />
+                value={clientEdit.moneda}
+                onValueChange={(value) => handleSelectChange(value, "moneda")}>
+                <SelectTrigger id="moneda">
+                  <SelectValue placeholder="Moneda" />
                 </SelectTrigger>
 
                 <SelectContent>
@@ -178,27 +191,55 @@ export function ClientEditModal({
                 <SelectItem value="2">2 ambientes</SelectItem>
                 <SelectItem value="3">3 ambientes</SelectItem>
                 <SelectItem value="4">4 ambientes</SelectItem>
+                <SelectItem value="5">5 ambientes</SelectItem>
+                <SelectItem value="6">6 ambientes</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label htmlFor="operacion">Operación</Label>
-            <Textarea
-              id="operacion"
-              name="operacion"
-              value={clientEdit.operacion}
-              onChange={handleChange}
-            />
+            <Label htmlFor="tipologia">Tipología</Label>
+            <Select
+              onValueChange={(value) => handleSelectChange(value, "tipologia")}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccione la tipología" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Departamento">Departamento</SelectItem>
+                <SelectItem value="Casa">Casa</SelectItem>
+                <SelectItem value="PH">PH</SelectItem>
+                <SelectItem value="Oficina">Oficina</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
-            <Label htmlFor="presupuesto">Presupuesto</Label>
-            <Textarea
-              id="presupuesto"
-              name="presupuesto"
-              value={clientEdit.presupuesto}
-              onChange={handleChange}
-            />
+            <Label htmlFor="operacion">Tipo de Operación</Label>
+            <Select
+              onValueChange={(value) => handleSelectChange(value, "operacion")}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccione la operación" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Venta">Venta</SelectItem>
+                <SelectItem value="Compra">Compra</SelectItem>
+                <SelectItem value="Alquiler">Alquiler</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+          <div>
+            <Label htmlFor="estado">Estado</Label>
+            <Select
+              onValueChange={(value) => handleSelectChange(value, "estado")}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccione el estado" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Busqueda">Busqueda</SelectItem>
+                <SelectItem value="En proceso">En proceso</SelectItem>
+                <SelectItem value="Finalizado">Finalizado</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <DialogFooter>
             <Button type="submit">Guardar Cambios</Button>
           </DialogFooter>

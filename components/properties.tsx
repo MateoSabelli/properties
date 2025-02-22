@@ -203,7 +203,7 @@ function PropertyCard({
           />
         </Link>
       </div>
-      <div className="mt-3 space-y-1">
+      <div className="mt-3 space-y-2">
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <h3 className="font-medium text-md">{property.ubicacion}</h3>
@@ -231,13 +231,14 @@ function PropertyCard({
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
-          <p className="font-semibold text-sm">
+        <div className="flex justify-between items-center gap-2">
+          <p className="font-semibold text-md">
             $
             {property.precio
               .toLocaleString("es-AR", { maximumFractionDigits: 0 })
               .replace(",", ".")}{" "}
-            {currencySymbol}
+            {currencySymbol}{" "}
+            {/* <span className="text-xs text-gray-600">+ $220.000</span> */}
           </p>
           <div className="flex gap-2">
             <button
