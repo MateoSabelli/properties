@@ -43,16 +43,31 @@ export default function ClientProperties() {
   }, [clientName]);
 
   const handleFavoriteClick = async (property: any) => {
-    const updatedProperty = {
-      ...property,
-      favorite: !property.favorite,
-    };
+    // Actualización optimista: invertimos el estado local inmediatamente
+    const updatedFavorite = !property.favorite;
+    setProperties((prev) =>
+      prev
+        ? prev.map((p) =>
+            p.id === property.id ? { ...p, favorite: updatedFavorite } : p
+          )
+        : []
+    );
 
+    // Preparamos el objeto para actualizar en el servidor
+    const updatedProperty = { ...property, favorite: updatedFavorite };
+
+    // Enviamos la actualización al servidor
     const success = await updatePropertyFavorite(updatedProperty);
-    if (success && properties) {
-      setProperties(
-        properties.map((p) => (p.id === property.id ? updatedProperty : p))
+    if (!success) {
+      // Si falla, revertimos la actualización optimista
+      setProperties((prev) =>
+        prev
+          ? prev.map((p) =>
+              p.id === property.id ? { ...p, favorite: updatedFavorite } : p
+            )
+          : []
       );
+      // Opcional: mostrar un mensaje de error (toast, etc.)
     }
   };
 

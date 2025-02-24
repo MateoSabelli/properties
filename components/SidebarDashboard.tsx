@@ -221,6 +221,24 @@ const Dashboard = ({ user, activeSideLink }: DashboardProps) => {
     FetchProperties();
   }, [user?.id]);
 
+  const fetchClient = async () => {
+    if (!user?.id) return;
+    const { data, error } = await FetchClients();
+    const { data: properties, error: propertiesError } =
+      await FetchProperties();
+
+    if (!error && data) {
+      setAccountsClients(data);
+      setName(data[0]?.name || "");
+    }
+    if (!propertiesError && properties) {
+      setPropertiesData(properties);
+    }
+  };
+  useEffect(() => {
+    fetchClient();
+  }, [user?.id]);
+
   const renderContent = () => {
     switch (activeSideLink) {
       case "Dashboard":
@@ -255,10 +273,10 @@ const Dashboard = ({ user, activeSideLink }: DashboardProps) => {
         );
 
       case "Profile":
-        return <Profile accountsClients={accountsClients} />;
+        return <div>hola</div>;
 
       case "Settings":
-        return <Configuracion />;
+        return <Configuracion user={user} />;
       case "Logout":
         return <p>Cerrando sesion...</p>;
       default:

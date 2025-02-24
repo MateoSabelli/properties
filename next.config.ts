@@ -25,6 +25,11 @@ const nextConfig: NextConfig = {
         hostname: "cdn.21online.lat",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "sdecbbcorftaaspwzvfj.supabase.co",
+        pathname: "/**",
+      },
     ],
   },
 };

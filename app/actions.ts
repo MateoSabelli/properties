@@ -138,6 +138,25 @@ export const signOutAction = async () => {
   return redirect("/sign-in");
 };
 
+export const FetchProfile = async () => {
+  const supabase = await createClient();
+  const { data: user, error: userError } = await supabase.auth.getUser();
+  if (userError) {
+    console.error("Error fetching user:", userError);
+    return { error: userError };
+  }
+    let { data: profiles, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user?.user?.id)
+  if (error) {
+    console.error('Error fetching accounts:', error);
+    return { data: null, error }; 
+  }
+  console.log(profiles);
+  return { data: profiles, error };
+};
+
 
 export interface Client {
   id?: string;
@@ -398,4 +417,36 @@ export const updatePropertyFavorite = async (property: Property): Promise<Insert
   }
 
   return { data };
+};
+
+export const uploadImage = async (file: File, user_id: string) => {
+  const supabase = await createClient();
+  try {
+    const { error } = await supabase.storage
+      .from("avatars")
+      .upload(`${user_id}/img.jpg`, file);
+
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return false;
+  }
+};
+
+export const fetchImage = async (user_id : string): Promise<string | null> => {
+  const supabase = await createClient();
+  try {
+    const { data, error } = await supabase.storage
+      .from("avatars")
+      .createSignedUrl(`${user_id}/img.jpg`, 60); // URL válida por 60 segundos
+
+    if (error) throw error;
+
+    // Retorna la URL firmada si existe
+    return data?.signedUrl || null;
+  } catch (error) {
+    console.error("Error fetching CV:", error);
+    return null;
+  }
 };
