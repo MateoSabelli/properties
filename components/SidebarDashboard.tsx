@@ -6,7 +6,7 @@ import {
   IconSettings,
   IconUserBolt,
 } from "@tabler/icons-react";
-import { Home, FileUser } from "lucide-react";
+import { Home, FileUser, Heart } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,8 @@ import { Properties } from "./properties";
 import Clients from "./Clients";
 import DashboardPage from "./Dashboard";
 import Configuracion from "./Configuracion";
+import Likes from "./Likes";
+import Profile from "./Profile";
 
 interface SidebarDemoProps {
   user: {
@@ -29,13 +31,13 @@ interface SidebarDemoProps {
 
 export function SidebarDemo({ user }: SidebarDemoProps) {
   const links = [
-    {
+    /* {
       label: "Dashboard",
       href: "#",
       icon: (
         <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
-    },
+    }, */
     {
       label: "Clientes",
       href: "#",
@@ -48,6 +50,13 @@ export function SidebarDemo({ user }: SidebarDemoProps) {
       href: "#",
       icon: (
         <Home className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Likes",
+      href: "#",
+      icon: (
+        <Heart className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
@@ -78,7 +87,7 @@ export function SidebarDemo({ user }: SidebarDemoProps) {
     // Intentar obtener el valor guardado en localStorage
     const savedLink = localStorage.getItem("lastActiveLink");
     // Si existe un valor guardado, usarlo; si no, usar "Dashboard"
-    return savedLink || "Dashboard";
+    return savedLink || "Clientes";
   });
 
   // Actualizar localStorage cuando cambie activeSideLink
@@ -237,9 +246,16 @@ const Dashboard = ({ user, activeSideLink }: DashboardProps) => {
             propertiesData={propertiesData}
           />
         );
+      case "Likes":
+        return (
+          <Likes
+            accountsClients={accountsClients}
+            propertiesData={propertiesData}
+          />
+        );
 
       case "Profile":
-        return <div className="p-6">Aquí va el perfil del usuario</div>;
+        return <Profile accountsClients={accountsClients} />;
 
       case "Settings":
         return <Configuracion />;

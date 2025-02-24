@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Fondo circular -->
+  <circle cx="32" cy="32" r="31" fill="#fff" stroke="#2C3E50" stroke-width="2"/>
+  <!-- Techo de la casa -->
+  <polygon points="16,30 32,14 48,30" fill="#3498DB"/>
+  <!-- Cuerpo de la casa -->
+  <rect x="20" y="30" width="24" height="20" fill="#2C3E50"/>
+  <!-- Detalle central (ventana o marca) -->
+  <circle cx="32" cy="40" r="3" fill="#fff"/>
+</svg>
