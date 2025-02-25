@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Overview } from "@/components/overview";
-import { RecentSales } from "@/components/recent-sales";
-import { PropertyTypes } from "@/components/property-types";
+import { Overview } from "@/components/graph/overview";
+import { RecentSales } from "@/components/graph/recent-sales";
+import { PropertyTypes } from "@/components/graph/property-types";
 
 interface DashboardProps {
   accountsClients: any[] | null;

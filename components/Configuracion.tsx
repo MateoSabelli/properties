@@ -154,31 +154,32 @@ const CardConfig = ({ user }: ProfileProps) => {
   }, [user?.id]);
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none p-6">
       <div className="max-w-3xl mx-auto space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">
+        <div className="flex flex-col sm:flex-row justify-between items-center">
+          <h1 className="text-3xl font-bold text-gray-900 ">
             Configuración de Tarjeta Virtual
           </h1>
-          <Sheet open={previewOpen} onOpenChange={setPreviewOpen}>
-            <SheetTrigger asChild>
-              <Button variant="outline">Vista Previa</Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-full sm:max-w-2xl">
-              <SheetHeader>
-                <SheetTitle>Vista Previa de la Tarjeta</SheetTitle>
-              </SheetHeader>
-              <div className="mt-6">
-                <RealEstateCard data={agentData} />
-              </div>
-            </SheetContent>
-          </Sheet>
         </div>
 
         <Card>
-          <CardHeader className="border-b">
-            <h2 className="text-xl font-semibold">Información Personal</h2>
+          <CardHeader className="border-b flex flex-row justify-between items-center">
+            <h2 className="text-xl font-semibold ">Información Personal</h2>
+            <Sheet open={previewOpen} onOpenChange={setPreviewOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline">Vista Previa</Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-full sm:max-w-2xl">
+                <SheetHeader>
+                  <SheetTitle>Vista Previa de la Tarjeta</SheetTitle>
+                </SheetHeader>
+                <div>
+                  <RealEstateCard data={agentData} />
+                </div>
+              </SheetContent>
+            </Sheet>
           </CardHeader>
+
           <CardContent className="space-y-6 pt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Campo de imagen de perfil */}

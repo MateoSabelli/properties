@@ -7,7 +7,14 @@ import { PropertyUploadForm } from "./property-upload-form";
 import { PropertyEditModal } from "./property-edit-modal";
 import { addProperty, FetchProperties, updateProperty } from "@/app/actions";
 import { Skeleton } from "./ui/skeleton";
-import { HomeIcon, SquareIcon, BedDoubleIcon, Bath, Edit } from "lucide-react";
+import {
+  HomeIcon,
+  SquareIcon,
+  BedDoubleIcon,
+  Bath,
+  Edit,
+  Heart,
+} from "lucide-react";
 
 type Property = {
   cliente: string;
@@ -49,7 +56,6 @@ export function Properties({
       const { data } = await FetchProperties();
       if (data) {
         setProperties(data);
-        console.log(data);
       }
       setShowAddPropertyForm(false);
     }
@@ -58,7 +64,6 @@ export function Properties({
     const response = await updateProperty(editedProperty);
     if (!response.error) {
       const { data } = await FetchProperties();
-
       if (data) {
         setProperties(data);
       }
@@ -66,15 +71,6 @@ export function Properties({
     }
   };
 
-  const handleEditProperty = (editedProperty: any) => {
-    setProperties((prev) =>
-      prev.map((prop) =>
-        prop.link === editedProperty.link ? editedProperty : prop
-      )
-    );
-  };
-
-  console.log(properties);
   return (
     <div className="container mx-auto py-8 px-4 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none">
       <div className="flex justify-between items-center mb-6 sm:flex-row flex-col gap-4">
@@ -189,29 +185,38 @@ function PropertyCard({
     return `${rooms} ambientes`;
   };
   return (
-    <div className="group relative">
-      <div className="relative aspect-[4/3] hover:scale-105 transition-all duration-300">
+    <div className="group relative border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden shadow-md">
+      <div className="relative aspect-[4/3]">
         <Link
           href={property.link}
           target="_blank"
-          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 ">
+          className="border-2 border-gray-200 shadow-md rounded-lg">
           <Image
             src={property.imagen}
             alt={property.ubicacion}
             fill
-            className="object-cover rounded-xl"
+            className="object-cover rounded-lg"
           />
         </Link>
       </div>
-      <div className="mt-3 space-y-2">
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
+
+      <div className="space-y-1 p-4">
+        <div className="flex items-start justify-between">
+          <div>
             <h3 className="font-medium text-md">{property.ubicacion}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {property.direccion}
             </p>
           </div>
+          <div className="flex gap-2">
+            <button
+              onClick={onEditClick}
+              className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
+              <Edit className="w-5 h-5" />
+            </button>
+          </div>
         </div>
+
         <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
           <div className="flex items-center gap-1">
             <HomeIcon className="w-4 h-4" />
@@ -230,23 +235,15 @@ function PropertyCard({
             <span>{property.banos}</span>
           </div>
         </div>
-
-        <div className="flex justify-between items-center gap-2">
+        <div className="flex flex-row justify-start items-center pt-1 gap-1 relative">
           <p className="font-semibold text-md">
             $
             {property.precio
               .toLocaleString("es-AR", { maximumFractionDigits: 0 })
               .replace(",", ".")}{" "}
             {currencySymbol}{" "}
-            {/* <span className="text-xs text-gray-600">+ $220.000</span> */}
           </p>
-          <div className="flex gap-2">
-            <button
-              onClick={onEditClick}
-              className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
-              <Edit className="w-5 h-5" />
-            </button>
-          </div>
+          <div className="text-xs text-gray-600">+ $220.000 expensas</div>
         </div>
       </div>
     </div>

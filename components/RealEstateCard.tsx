@@ -63,9 +63,11 @@ const RealEstateCard = ({ data }: RealEstateCardProps) => {
   };
 
   return (
-    <div className="min-h-screen p-6 flex flex-col items-center justify-center">
-      <div ref={cardRef} className="mb-6">
-        <Card className="w-full max-w-md mx-auto rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-105">
+    <div className="h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none p-6 flex flex-col items-center justify-center ">
+      <div className=" h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none">
+        <Card
+          ref={cardRef}
+          className="w-full max-w-md mx-auto rounded-xl shadow-lg overflow-hidden transition-transform ">
           {/* Header - fondo degradado */}
           <div className="relative h-32 bg-gradient-to-r from-blue-600 to-blue-400">
             <div className="absolute -bottom-16 left-6">
@@ -126,14 +128,14 @@ const RealEstateCard = ({ data }: RealEstateCardProps) => {
             </div>
           </CardContent>
         </Card>
-      </div>
-      <div className="flex flex-col gap-4 w-full max-w-md">
-        <Button
-          onClick={handleShareImage}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md transition-colors">
-          <Share2 className="w-5 h-5 mr-2 inline-block" />
-          Compartir Tarjeta
-        </Button>
+        <div className="flex flex-col gap-4 w-full max-w-md mt-2">
+          <Button
+            onClick={handleShareImage}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md transition-colors">
+            <Share2 className="w-5 h-5 mr-2 inline-block" />
+            Compartir Tarjeta
+          </Button>
+        </div>
       </div>
     </div>
   );

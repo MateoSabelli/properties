@@ -42,12 +42,9 @@ export default function Likes({
   propertiesData: any[] | null;
 }) {
   const [client, setClient] = useState("Todos");
-  console.log(accountsClients);
   const handleSelectChange = (value: string, field: string) => {
     setClient(value);
   };
-  console.log(client);
-  console.log(propertiesData);
   return (
     <div className="container mx-auto py-8 px-4 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none">
       <div className="flex justify-between items-center mb-6 sm:flex-row flex-col gap-4">
@@ -146,7 +143,7 @@ function PropertyCard({ property }: PropertyCardProps) {
   };
 
   return (
-    <div className="group relative">
+    <div className="group relative border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden shadow-md">
       <div className="relative aspect-[4/3] ">
         <Link
           href={property.link}
