@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import RealEstateCard from "./RealEstateCard";
-import { FetchProfile, uploadImage, fetchImage } from "@/app/actions";
+import {
+  FetchProfile,
+  uploadImage,
+  fetchImage,
+  uploadBanner,
+  fetchBanner,
+  updateProfile,
+} from "@/app/actions";
 import Image from "next/image";
 
 interface AgentData {
@@ -20,11 +28,11 @@ interface AgentData {
   role: string;
   username: string;
   avatar_url: string;
+  banner: string;
   phone: string;
   email: string;
   inmobiliaria: string;
   descripcion: string;
-  specialties: string[];
 }
 
 interface ProfileProps {
@@ -45,11 +53,11 @@ const CardConfig = ({ user }: ProfileProps) => {
     role: "",
     username: "",
     avatar_url: "",
+    banner: "",
     phone: "",
     email: "",
     inmobiliaria: "",
     descripcion: "",
-    specialties: [],
   });
 
   const fetchClients = async () => {
@@ -71,11 +79,11 @@ const CardConfig = ({ user }: ProfileProps) => {
         role: accountsClients.role || "",
         username: accountsClients.username || "",
         avatar_url: accountsClients.avatar_url || "",
+        banner: accountsClients.banner || "",
         phone: accountsClients.phone || "",
         email: accountsClients.email || "",
         inmobiliaria: accountsClients.inmobiliaria || "",
         descripcion: accountsClients.descripcion || "",
-        specialties: accountsClients.specialties || [],
       });
     }
   }, [accountsClients]);
@@ -102,6 +110,7 @@ const CardConfig = ({ user }: ProfileProps) => {
     });
   };
 
+  console.log(agentData);
   // Función para cargar la imagen usando fetchImage
   const handleFetchAvatar = async () => {
     const imageUrl = await fetchImage(user.id);
@@ -153,6 +162,27 @@ const CardConfig = ({ user }: ProfileProps) => {
     }
   }, [user?.id]);
 
+  const handleUpdateProfile = async () => {
+    const response = await updateProfile({ id: user.id, ...agentData });
+    if (
+      !response.error &&
+      response.data &&
+      Array.isArray(response.data) &&
+      response.data.length > 0
+    ) {
+      setAccountsClients(response.data[0]);
+      toast({
+        title: "Datos guardados",
+        description: "Los cambios han sido guardados exitosamente",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar la información",
+      });
+    }
+  };
+
   return (
     <div className="h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none p-6">
       <div className="max-w-3xl mx-auto space-y-6">
@@ -187,7 +217,7 @@ const CardConfig = ({ user }: ProfileProps) => {
                 <label className="text-sm font-medium text-gray-700">
                   Imagen de Perfil
                 </label>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col items-start gap-4">
                   {agentData.avatar_url ? (
                     <img
                       src={agentData.avatar_url}
@@ -208,6 +238,32 @@ const CardConfig = ({ user }: ProfileProps) => {
                       Cargar Avatar
                     </Button>
                   </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Banner
+                </label>
+                <div className="flex flex-col items-center gap-4">
+                  {agentData.banner ? (
+                    <img
+                      src={agentData.banner}
+                      alt="Avatar"
+                      className="w-full h-16 object-cover"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-gray-200"></div>
+                  )}
+                  {/* <div className="space-y-2">
+                    <Input
+                      type="file"
+                      onChange={handleBannerUpload}
+                      accept="banner/*"
+                    />
+                    <Button onClick={handleFetchBanner} variant="outline">
+                      Cargar Avatar
+                    </Button>
+                  </div> */}
                 </div>
               </div>
               {/* Otros campos */}
@@ -232,7 +288,6 @@ const CardConfig = ({ user }: ProfileProps) => {
                 />
               </div>
             </div>
-
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
                 Empresa
@@ -291,23 +346,8 @@ const CardConfig = ({ user }: ProfileProps) => {
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Especialidades
-              </label>
-              <Input
-                value={agentData.specialties.join(", ")}
-                onChange={(e) => handleSpecialtiesChange(e.target.value)}
-                placeholder="Especialidades separadas por comas"
-              />
-              <p className="text-sm text-gray-500">
-                Separa las especialidades con comas (ej: Residencial, Comercial,
-                Luxury)
-              </p>
-            </div>
-
             <Button
-              onClick={handleSave}
+              onClick={handleUpdateProfile}
               className="w-full bg-blue-600 hover:bg-blue-700">
               <Save className="w-4 h-4 mr-2" />
               Guardar Cambios

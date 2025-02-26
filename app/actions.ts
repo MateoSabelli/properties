@@ -46,7 +46,10 @@ export const signUpAction = async (email: string, password: string , repetirpass
   }
 };
 
-export const signInAction = async (email: string, password: string) => {
+export const signInAction = async (
+  email: string,
+  password: string
+): Promise<{ error?: string; success?: boolean; redirectPath?: string }> => {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -55,10 +58,12 @@ export const signInAction = async (email: string, password: string) => {
   });
 
   if (error) {
-    return encodedRedirect("error", "/sign-in", error.message);
+    console.error("Error en signInAction:", error.message);
+    return { error: error.message, success: false };
   }
 
-  return redirect("/protected");
+  // Si el login es correcto, devolvemos true y la ruta a la que se podría redirigir
+  return { success: true, redirectPath: "/protected" };
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
@@ -450,3 +455,74 @@ export const fetchImage = async (user_id : string): Promise<string | null> => {
     return null;
   }
 };
+
+export const uploadBanner = async (file: File, user_id: string) => {
+  const supabase = await createClient();
+  try {
+    const { error } = await supabase.storage
+      .from("banner")
+      .upload(`${user_id}/banner.jpg`, file);
+
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error("Error uploading Banner:", error);
+    return false;
+  }
+};
+
+export const fetchBanner = async (user_id : string): Promise<string | null> => {
+  const supabase = await createClient();
+  try {
+    const { data, error } = await supabase.storage
+      .from("banner")
+      .createSignedUrl(`${user_id}/banner.jpg`, 60); // URL válida por 60 segundos
+
+    if (error) throw error;
+
+    // Retorna la URL firmada si existe
+    return data?.signedUrl || null;
+  } catch (error) {
+    console.error("Error fetching Banner:", error);
+    return null;
+  }
+};
+
+interface Profile {
+  id: string;
+  full_name: string;
+  role: string;
+  username: string;
+  avatar_url: string;
+  phone: string;
+  email: string;
+  inmobiliaria: string;
+  descripcion: string;
+  banner: string;
+}
+
+export const updateProfile = async (profile: Profile): Promise<InsertResult> => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ 
+      full_name: profile.full_name,
+      role: profile.role,
+      username: profile.username,
+      avatar_url: profile.avatar_url,
+      phone: profile.phone,
+      email: profile.email,
+      inmobiliaria: profile.inmobiliaria,
+      descripcion: profile.descripcion,
+      banner: profile.banner,
+    })
+    .eq('id', profile.id)
+    .select();
+
+  if (error) {
+    console.error("Error updating profile:", error);
+    return { error };
+  }
+
+  return { data };
+}
