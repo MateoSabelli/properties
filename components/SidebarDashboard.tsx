@@ -18,7 +18,7 @@ import Clients from "./Clients";
 import DashboardPage from "./Dashboard";
 import Configuracion from "./Configuracion";
 import Likes from "./Likes";
-import Profile from "./Profile";
+import Profile from "./Configuracion";
 
 interface SidebarDemoProps {
   user: {
@@ -273,10 +273,10 @@ const Dashboard = ({ user, activeSideLink }: DashboardProps) => {
         );
 
       case "Profile":
-        return <div>hola</div>;
+        return <Profile user={user} />;
 
       case "Settings":
-        return <Configuracion user={user} />;
+        return <div>hola</div>;
       case "Logout":
         return <p>Cerrando sesion...</p>;
       default:

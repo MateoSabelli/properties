@@ -67,9 +67,8 @@ const RealEstateCard = ({ data }: RealEstateCardProps) => {
       <div>
         <Card
           ref={cardRef}
-          className="w-[300px] max-w-md mx-auto rounded-xl shadow-lg overflow-hidden transition-transform ">
-          {/* Header - fondo degradado */}
-          <div className="relative h-24">
+          className="w-[300px] md:w-[350px] max-w-md mx-auto rounded-xl shadow-lg overflow-hidden transition-transform">
+          <div className="relative h-32">
             <img
               src={data?.banner}
               alt=""
@@ -79,7 +78,7 @@ const RealEstateCard = ({ data }: RealEstateCardProps) => {
               <img
                 src={data?.avatar_url}
                 alt="Avatar"
-                className="w-24 h-24 rounded-full object-cover border-4 border-white bg-white"
+                className="w-28 h-28 rounded-full object-cover border-4 border-white bg-white"
               />
             </div>
           </div>

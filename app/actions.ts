@@ -429,7 +429,7 @@ export const uploadImage = async (file: File, user_id: string) => {
   try {
     const { error } = await supabase.storage
       .from("avatars")
-      .upload(`${user_id}/img.jpg`, file);
+      .upload(`${user_id}/img.jpg`, file,  { upsert: true });
 
     if (error) throw error;
     return true;
@@ -461,7 +461,7 @@ export const uploadBanner = async (file: File, user_id: string) => {
   try {
     const { error } = await supabase.storage
       .from("banner")
-      .upload(`${user_id}/banner.jpg`, file);
+      .upload(`${user_id}/banner.jpg`, file, { upsert: true });
 
     if (error) throw error;
     return true;

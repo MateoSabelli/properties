@@ -1,9 +1,17 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Building, Phone, Mail, MapPin, Save } from "lucide-react";
+import {
+  Building,
+  Phone,
+  Mail,
+  MapPin,
+  Save,
+  Settings2,
+  Ghost,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Sheet,
@@ -44,7 +52,7 @@ interface ProfileProps {
   };
 }
 
-const CardConfig = ({ user }: ProfileProps) => {
+const Profile = ({ user }: ProfileProps) => {
   const { toast } = useToast();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [accountsClients, setAccountsClients] = useState<any>({});
@@ -103,14 +111,6 @@ const CardConfig = ({ user }: ProfileProps) => {
     }));
   };
 
-  const handleSave = () => {
-    toast({
-      title: "Datos guardados",
-      description: "Los cambios han sido guardados exitosamente",
-    });
-  };
-
-  console.log(agentData);
   // Función para cargar la imagen usando fetchImage
   const handleFetchAvatar = async () => {
     const imageUrl = await fetchImage(user.id);
@@ -183,6 +183,12 @@ const CardConfig = ({ user }: ProfileProps) => {
     }
   };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none p-6">
       <div className="max-w-3xl mx-auto space-y-6">
@@ -218,22 +224,31 @@ const CardConfig = ({ user }: ProfileProps) => {
                   Imagen de Perfil
                 </label>
                 <div className="flex flex-col items-start gap-4">
+                  {/* Input file oculto */}
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
                   {agentData.avatar_url ? (
-                    <img
-                      src={agentData.avatar_url}
-                      alt="Avatar"
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
+                    <button
+                      className=" cursor relative w-16 h-16 rounded-full"
+                      onClick={handleAvatarClick}>
+                      <img
+                        src={agentData.avatar_url}
+                        alt="Avatar"
+                        className="w-16 h-16 rounded-full object-cover"
+                      />
+                      <Settings2 className="text-blue-600  absolute bottom-0 right-0 h-4 w-4 " />
+                    </button>
                   ) : (
-                    <div className="w-16 h-16 rounded-full bg-gray-200"></div>
+                    <div
+                      className="w-16 h-16 rounded-full bg-gray-200 cursor-pointer"
+                      onClick={handleAvatarClick}></div>
                   )}
                   <div className="space-y-2">
-                    <Input
-                      type="file"
-                      onChange={handleImageUpload}
-                      accept="image/*"
-                    />
-                    {/* Botón para cargar la imagen usando fetchImage */}
                     <Button onClick={handleFetchAvatar} variant="outline">
                       Cargar Avatar
                     </Button>
@@ -359,4 +374,4 @@ const CardConfig = ({ user }: ProfileProps) => {
   );
 };
 
-export default CardConfig;
+export default Profile;
