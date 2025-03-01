@@ -30,6 +30,11 @@ const nextConfig: NextConfig = {
         hostname: "sdecbbcorftaaspwzvfj.supabase.co",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "flagsapi.com",
+        pathname: "/**",
+      },
     ],
   },
 };

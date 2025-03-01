@@ -4,7 +4,7 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { data } from "autoprefixer";
+import { Client, Property } from "@/types";
 
 export const signUpAction = async (email: string, password: string , repetirpassword: string) => {
   const supabase = await createClient();
@@ -163,18 +163,6 @@ export const FetchProfile = async () => {
 };
 
 
-export interface Client {
-  id?: string;
-  name: string;
-  email: string;
-  phone: string;
-  barrio: string;
-  presupuesto: string;
-  tipologia: string;
-  ambientes: string;
-  operacion: string;
-  estado: string;
-}
 
 interface InsertResult {
   data?: any;
@@ -269,21 +257,7 @@ export const EditClients = async (client: Client) => {
   return { data, error: null };
 };
 
-interface Property {
-  id: string;
-  cliente: string;
-  ubicacion: string;
-  direccion: string;
-  precio: number;
-  moneda: string;
-  ambientes: string;
-  metros: number;
-  dormitorios: number;
-  banos: number;
-  imagen: string;
-  link: string;
-  favorite: boolean;
-}
+
 
 
 export const addProperty = async (property: Property): Promise<InsertResult> => {

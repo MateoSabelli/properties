@@ -255,6 +255,7 @@ const Dashboard = ({ user, activeSideLink }: DashboardProps) => {
             setShowAddClientForm={setShowAddClientForm}
             accountsClients={accountsClients}
             fetchClients={fetchClients}
+            propertiesData={propertiesData}
           />
         );
       case "Propiedades":

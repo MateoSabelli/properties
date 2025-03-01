@@ -3,32 +3,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Heart, HomeIcon, BedDoubleIcon, SquareIcon, Bath } from "lucide-react";
-
-export interface Property {
-  id: string;
-  ubicacion: string;
-  direccion: string;
-  precio: number;
-  moneda: "USD" | "ARS";
-  ambientes: string;
-  metros: number;
-  dormitorios: number;
-  banos: number;
-  imagen: string;
-  link: string;
-  descripcion: string;
-  cliente: string;
-  favorite: boolean;
-}
+import { Property } from "@/types";
 
 export interface PropertyCardProps {
   property: Property;
-  isFavorite: boolean;
+  isFavorite?: boolean;
   onFavoriteClick?: () => void;
   likes?: string | null;
 }
 
-export function PropertyCard({
+export function PropertyCardSinLike({
   property,
   isFavorite,
   onFavoriteClick,
@@ -57,21 +41,6 @@ export function PropertyCard({
             className="object-cover rounded-lg"
           />
         </Link>
-        <button
-          onClick={onFavoriteClick}
-          className={
-            likes !== "true"
-              ? "absolute top-3 right-3 hover:scale-110 transition-all duration-300 z-10"
-              : "hidden"
-          }>
-          <Heart
-            className={`w-6 h-6 ${
-              property.favorite
-                ? "fill-red-500/90 border-white text-white"
-                : "text-gray-100 fill-black/50"
-            }`}
-          />
-        </button>
       </div>
 
       <div className="space-y-1 p-4">

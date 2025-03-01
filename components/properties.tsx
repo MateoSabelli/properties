@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -7,29 +7,11 @@ import { PropertyUploadForm } from "./property-upload-form";
 import { PropertyEditModal } from "./property-edit-modal";
 import { addProperty, FetchProperties, updateProperty } from "@/app/actions";
 import { Skeleton } from "./ui/skeleton";
-import {
-  HomeIcon,
-  SquareIcon,
-  BedDoubleIcon,
-  Bath,
-  Edit,
-  Heart,
-} from "lucide-react";
-
-type Property = {
-  cliente: string;
-  ubicacion: string;
-  direccion: string;
-  precio: number;
-  moneda: "USD" | "ARS";
-  ambientes: string;
-  metros: number;
-  dormitorios: number;
-  banos: number;
-  descripcion: string;
-  link: string;
-  isFavorite: boolean;
-};
+import { HomeIcon, SquareIcon, BedDoubleIcon, Bath, Edit } from "lucide-react";
+import { Property } from "@/types";
+import FirecrawlScraper from "./YourComponent";
+import { scrapeData } from "@/lib/firecrawl";
+import { Badge } from "./ui/badge";
 
 export function Properties({
   accountsClients,
@@ -42,6 +24,10 @@ export function Properties({
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const [showAddPropertyForm, setShowAddPropertyForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState<any>(null);
+
+  useEffect(() => {
+    scrapeData();
+  }, []);
 
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => ({
@@ -82,6 +68,7 @@ export function Properties({
           onClick={() => setShowAddPropertyForm(!showAddPropertyForm)}>
           {showAddPropertyForm ? "Cerrar" : "Agregar Propiedad"}
         </Button>
+        <FirecrawlScraper />
       </div>
 
       {showAddPropertyForm && (
@@ -147,21 +134,7 @@ export function Properties({
 }
 
 interface PropertyCardProps {
-  property: {
-    id: string;
-    ubicacion: string;
-    direccion: string;
-    precio: number;
-    moneda: "USD" | "ARS";
-    ambientes: string;
-    metros: number;
-    dormitorios: number;
-    banos: number;
-    imagen: string;
-    link: string;
-    descripcion: string;
-    cliente: string;
-  };
+  property: Property;
   isFavorite: boolean;
   onFavoriteClick: () => void;
   onEditClick: () => void;
@@ -198,6 +171,13 @@ function PropertyCard({
             className="object-cover rounded-lg"
           />
         </Link>
+        <div className="absolute top-2 right-2">
+          <Badge
+            variant="secondary"
+            className="text-xs bg-gray-900 text-white hover:bg-gray-900">
+            {property.cliente}
+          </Badge>
+        </div>
       </div>
 
       <div className="space-y-1 p-4">
@@ -235,6 +215,7 @@ function PropertyCard({
             <span>{property.banos}</span>
           </div>
         </div>
+
         <div className="flex flex-row justify-start items-center pt-1 gap-1 relative">
           <p className="font-semibold text-md">
             $
