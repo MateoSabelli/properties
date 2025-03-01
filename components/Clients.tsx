@@ -10,6 +10,7 @@ import {
   Share,
   ArrowLeft,
   House,
+  Copy,
 } from "lucide-react";
 import { Input } from "./ui/input";
 import {
@@ -130,6 +131,22 @@ export default function Clients({
       toast({
         variant: "destructive",
         description: "Error al compartir",
+      });
+    }
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.origin + linkHref);
+      toast({
+        description: "Link copiado al portapapeles",
+      });
+      console.log("Link copiado al portapapeles");
+    } catch (err) {
+      console.error("Error al copiar:", err);
+      toast({
+        variant: "destructive",
+        description: "Error al copiar el link",
       });
     }
   };
@@ -304,6 +321,13 @@ export default function Clients({
                 onClick={handleShare}
                 className="w-auto px-2">
                 <Share size={18} /> Compartir
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={copyToClipboard}
+                className="w-auto px-2">
+                <Copy size={18} /> Copiar link
               </Button>
             </div>
           </div>

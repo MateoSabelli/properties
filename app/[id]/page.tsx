@@ -5,9 +5,12 @@ import { useProperties } from "@/hooks/useProperties";
 
 export default function ClientProperties() {
   const searchParams = useSearchParams();
-  const clientName = searchParams.get("cliente");
-  const likes = searchParams.get("likes");
-  const { properties, handleFavoriteClick } = useProperties(clientName, likes);
+  const clientName = searchParams?.get("cliente");
+  const likes = searchParams?.get("likes");
+  const { properties, handleFavoriteClick } = useProperties(
+    clientName as string,
+    likes as string
+  );
   if (!clientName) {
     return <div>No se especificó un cliente</div>;
   }
