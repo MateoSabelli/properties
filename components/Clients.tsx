@@ -11,6 +11,7 @@ import {
   ArrowLeft,
   House,
   Copy,
+  ListFilter,
 } from "lucide-react";
 import { Input } from "./ui/input";
 import {
@@ -20,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Label } from "./ui/label";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -28,14 +30,15 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { addProperty, FetchProperties } from "@/app/actions";
+import { addProperty, EditClients, FetchProperties } from "@/app/actions";
 import { toast } from "@/hooks/use-toast";
 import { EditClientForm } from "./edit-client-form";
+import { PropertyCardSinLike } from "./PropertyCardSinLike";
 import { Property, PropertyCard } from "./PropertyCard";
 import { PropertyUploadForm } from "./property-upload-form";
 
-function removeSpaces(text: string) {
-  return text ? text.replace(/\s/g, "") : "";
+function replaceSpaces(text: string) {
+  return text ? text.replace(/\s+/g, "%20") : "";
 }
 
 export default function Clients({
@@ -70,9 +73,44 @@ export default function Clients({
     setSelectedClient(null);
   };
 
-  const nombreCliente = removeSpaces(selectedClient?.name);
+  const HandleEditClient = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setShowAddClientForm(true);
+      const newClientData = {
+        id: selectedClient?.id,
+        name: selectedClient?.name,
+        email: selectedClient?.email,
+        phone: selectedClient?.phone.toString(),
+        barrio: selectedClient?.barrio,
+        presupuesto: selectedClient?.presupuesto.toString(),
+        tipologia: selectedClient?.tipologia,
+        ambientes: selectedClient?.ambientes.toString(),
+        operacion: selectedClient?.operacion,
+        estado: selectedClient?.estado,
+      };
+      console.log(newClientData);
+      const response = await EditClients(newClientData);
+      if (response.error) {
+        throw response.error;
+      }
+
+      toast({
+        description: "Cliente editado",
+      });
+      console.log("Cliente editado");
+    } catch (err) {
+      console.error("Error al editar:", err);
+      toast({
+        variant: "destructive",
+        description: "Error al editar el cliente",
+      });
+    }
+  };
+
+  const nombreCliente = replaceSpaces(selectedClient?.name);
   console.log(nombreCliente);
-  const linkHref = `/${selectedClient?.id}?cliente=${encodeURIComponent(nombreCliente)}&barrio=${encodeURIComponent(selectedClient?.barrio)}&tipologia=${encodeURIComponent(selectedClient?.tipologia)}&presupuesto=${selectedClient?.presupuesto}&ambientes=${selectedClient?.ambientes}&operacion=${encodeURIComponent(selectedClient?.operacion)}`;
+  const linkHref = `/${selectedClient?.id}?cliente=${nombreCliente}&barrio=${encodeURIComponent(selectedClient?.barrio)}&tipologia=${encodeURIComponent(selectedClient?.tipologia)}&presupuesto=${selectedClient?.presupuesto}&ambientes=${selectedClient?.ambientes}&operacion=${encodeURIComponent(selectedClient?.operacion)}`;
 
   const handleShare = async () => {
     try {
