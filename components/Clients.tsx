@@ -109,7 +109,6 @@ export default function Clients({
   };
 
   const nombreCliente = replaceSpaces(selectedClient?.name);
-  console.log(nombreCliente);
   const linkHref = `/${selectedClient?.id}?cliente=${nombreCliente}&barrio=${encodeURIComponent(selectedClient?.barrio)}&tipologia=${encodeURIComponent(selectedClient?.tipologia)}&presupuesto=${selectedClient?.presupuesto}&ambientes=${selectedClient?.ambientes}&operacion=${encodeURIComponent(selectedClient?.operacion)}`;
 
   const handleShare = async () => {
