@@ -112,7 +112,7 @@ export function EditClientForm({
             <Label htmlFor="email">Correo Electrónico</Label>
             <Input
               id="email"
-              type="email"
+              type="text"
               placeholder="correo@ejemplo.com"
               value={isEmpty(client.email)}
               onChange={handleChange}

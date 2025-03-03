@@ -20,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { Label } from "./ui/label";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -29,12 +28,15 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { addProperty, EditClients, FetchProperties } from "@/app/actions";
+import { addProperty, FetchProperties } from "@/app/actions";
 import { toast } from "@/hooks/use-toast";
 import { EditClientForm } from "./edit-client-form";
-import { PropertyCardSinLike } from "./PropertyCardSinLike";
 import { Property, PropertyCard } from "./PropertyCard";
 import { PropertyUploadForm } from "./property-upload-form";
+
+function removeSpaces(text: string) {
+  return text ? text.replace(/\s/g, "") : "";
+}
 
 export default function Clients({
   showAddClientForm,
@@ -68,43 +70,9 @@ export default function Clients({
     setSelectedClient(null);
   };
 
-  const HandleEditClient = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      setShowAddClientForm(true);
-      const newClientData = {
-        id: selectedClient?.id,
-        name: selectedClient?.name,
-        email: selectedClient?.email,
-        phone: selectedClient?.phone.toString(),
-        barrio: selectedClient?.barrio,
-        presupuesto: selectedClient?.presupuesto.toString(),
-        tipologia: selectedClient?.tipologia,
-        ambientes: selectedClient?.ambientes.toString(),
-        operacion: selectedClient?.operacion,
-        estado: selectedClient?.estado,
-      };
-      console.log(newClientData);
-      const response = await EditClients(newClientData);
-      if (response.error) {
-        throw response.error;
-      }
-
-      toast({
-        description: "Cliente editado",
-      });
-      console.log("Cliente editado");
-    } catch (err) {
-      console.error("Error al editar:", err);
-      toast({
-        variant: "destructive",
-        description: "Error al editar el cliente",
-      });
-    }
-  };
-
-  /* Funciones para copiar el link del cliente */
-  const linkHref = `/${selectedClient?.id}?cliente=${encodeURIComponent(selectedClient?.name)}&barrio=${encodeURIComponent(selectedClient?.barrio)}&tipologia=${encodeURIComponent(selectedClient?.tipologia)}&presupuesto=${selectedClient?.presupuesto}&ambientes=${selectedClient?.ambientes}&operacion=${encodeURIComponent(selectedClient?.operacion)}`;
+  const nombreCliente = removeSpaces(selectedClient?.name);
+  console.log(nombreCliente);
+  const linkHref = `/${selectedClient?.id}?cliente=${encodeURIComponent(nombreCliente)}&barrio=${encodeURIComponent(selectedClient?.barrio)}&tipologia=${encodeURIComponent(selectedClient?.tipologia)}&presupuesto=${selectedClient?.presupuesto}&ambientes=${selectedClient?.ambientes}&operacion=${encodeURIComponent(selectedClient?.operacion)}`;
 
   const handleShare = async () => {
     try {
@@ -113,14 +81,12 @@ export default function Clients({
         text: `¡Hola! Te comparto las propiedades seleccionadas para ${selectedClient?.name}`,
         url: window.location.origin + linkHref,
       };
-
       if (navigator.share) {
         await navigator.share(shareData);
         toast({
           description: "¡Compartido exitosamente!",
         });
       } else {
-        // Fallback para navegadores que no soportan Web Share API
         await navigator.clipboard.writeText(window.location.origin + linkHref);
         toast({
           description: "Link copiado al portapapeles",
@@ -165,14 +131,12 @@ export default function Clients({
     }
   };
   return (
-    <div className="p-4 container mx-auto">
+    <div className="p-4 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none">
       {currentView === "list" ? (
         <>
           <div className="flex sm:flex-row flex-col justify-between items-center mb-6 w-full gap-5">
-            <h2 className="text-3xl font-bold dark:text-white">
-              Dashboard de clientes
-            </h2>
-            <Button
+            <h2 className="text-3xl font-bold dark:text-white">Clientes</h2>
+            {/* <Button
               className="bg-black w-full sm:w-auto"
               onClick={() => setShowAddClientForm(!showAddClientForm)}>
               {showAddClientForm ? (
@@ -186,7 +150,7 @@ export default function Clients({
                   Agregar cliente
                 </>
               )}
-            </Button>
+            </Button> */}
           </div>
           <div className="mb-4">
             {showAddClientForm && (
@@ -203,35 +167,51 @@ export default function Clients({
               />
             )}
             <div className="">
-              <div className="flex justify-start items-center mb-4 mt-1 gap-3">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-semibold">Filtros</h3>
-                  <Select
-                    onValueChange={(value) =>
-                      handleSelectChange(value, "estado")
-                    }>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Seleccione el estado" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Todos">Todos</SelectItem>
-                      <SelectItem value="Busqueda">Busqueda</SelectItem>
-                      <SelectItem value="En proceso">En proceso</SelectItem>
-                      <SelectItem value="Finalizado">Finalizado</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 mt-1 gap-3">
+                <div className="flex  items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <Select
+                      onValueChange={(value) =>
+                        handleSelectChange(value, "estado")
+                      }>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Estado" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Todos">Todos</SelectItem>
+                        <SelectItem value="Busqueda">Busqueda</SelectItem>
+                        <SelectItem value="En proceso">En proceso</SelectItem>
+                        <SelectItem value="Finalizado">Finalizado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="search"
+                      placeholder="Buscar cliente"
+                      value={search}
+                      onChange={handleSearchChange}
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Input
-                    id="search"
-                    placeholder="Buscar cliente"
-                    value={search}
-                    onChange={handleSearchChange}
-                  />
-                </div>
+                <Button
+                  className="bg-black w-full sm:w-auto"
+                  onClick={() => setShowAddClientForm(!showAddClientForm)}>
+                  {showAddClientForm ? (
+                    <>
+                      <UserRoundX className="h-4 w-4" />
+                      Cerrar
+                    </>
+                  ) : (
+                    <>
+                      <UserRoundPlus className="h-4 w-4" />
+                      Agregar cliente
+                    </>
+                  )}
+                </Button>
               </div>
-              <div className=" h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-5 ">
+              <div className=" pt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 ">
                   {accountsClients ? (
                     accountsClients.length > 0 ? (
                       accountsClients
@@ -374,7 +354,7 @@ export default function Clients({
                     .filter(
                       (property) => property.cliente === selectedClient?.name
                     )
-                    .map((property, index) => (
+                    .map((property) => (
                       <PropertyCard
                         key={property.id}
                         property={property}

@@ -58,11 +58,9 @@ export function Properties({
   };
 
   return (
-    <div className="container mx-auto py-8 px-4 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none">
+    <div className=" px-4 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-none">
       <div className="flex justify-between items-center mb-6 sm:flex-row flex-col gap-4">
-        <h2 className="text-3xl font-bold dark:text-white w-full">
-          Dashboard de propiedades
-        </h2>
+        <h2 className="text-3xl font-bold dark:text-white w-full">Busquedas</h2>
         <Button
           className="bg-black w-full sm:w-auto"
           onClick={() => setShowAddPropertyForm(!showAddPropertyForm)}>
@@ -84,7 +82,7 @@ export function Properties({
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {propertiesData ? (
           propertiesData.length > 0 ? (
             propertiesData.map((property) => (

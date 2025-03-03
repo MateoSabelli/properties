@@ -31,13 +31,13 @@ interface SidebarDemoProps {
 
 export function SidebarDemo({ user }: SidebarDemoProps) {
   const links = [
-    /* {
+    {
       label: "Dashboard",
       href: "#",
       icon: (
         <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
-    }, */
+    },
     {
       label: "Clientes",
       href: "#",
@@ -104,10 +104,10 @@ export function SidebarDemo({ user }: SidebarDemoProps) {
     <div
       className={cn(
         "rounded-md p-0 flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 border border-neutral-200 dark:border-neutral-700 overflow-hidden",
-        "h-[100vh]"
+        "h-[100vh] bg-slate-100"
       )}>
       <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="justify-between gap-10">
+        <SidebarBody className="justify-between gap-10 bg-slate-100">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             {open ? <Logo /> : <LogoIcon />}
             {

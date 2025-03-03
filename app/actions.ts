@@ -500,3 +500,23 @@ export const updateProfile = async (profile: Profile): Promise<InsertResult> => 
 
   return { data };
 }
+
+
+export const fetchProfile = async (user_id : string): Promise<string | null> => {
+  const supabase = await createClient();
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select('*')
+      .eq('id', user_id)
+      .single();
+
+    if (error) throw error;
+
+    // Retorna la URL firmada si existe
+    return data;
+  } catch (error) {
+    console.error("Error fetching Banner:", error);
+    return null;
+  }
+};
