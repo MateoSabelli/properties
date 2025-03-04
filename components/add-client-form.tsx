@@ -89,7 +89,12 @@ export function AddClientForm({
 
     // Combinar el prefijo seleccionado con el número ingresado
     const fullPhone = `${phonePrefix} ${clients.phone}`;
-    const clientToSave = { ...clients, phone: fullPhone };
+    const clientToSave = {
+      ...clients,
+      phone: fullPhone,
+      created_at: new Date().toISOString(),
+      notas: "",
+    };
 
     console.log("Cliente a guardar:", clientToSave);
 
