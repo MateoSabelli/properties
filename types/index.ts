@@ -25,7 +25,8 @@ export interface Client {
     ambientes: string;
     operacion: string;
     estado: string;
-    created_at?: string;
+    created_at: string;
+    notas: string;
 }
 
 
@@ -40,6 +41,7 @@ export interface ClientCardProps {
   ambientes: string;
   operacion: string;
   estado: string;
+  created_at: string;
   setShowAddClientForm: (show: boolean) => void;
   fetchClients: () => void;
   onFavoriteChange?: (isFavorite: boolean) => void;

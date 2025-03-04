@@ -1,4 +1,4 @@
-import FirecrawlApp from "@mendable/firecrawl-js";
+/* import FirecrawlApp from "@mendable/firecrawl-js";
 import { z } from "zod";
 
 export async function scrapeData() {
@@ -25,3 +25,4 @@ export async function scrapeData() {
 
   console.log(scrapeResult.extract);
 }
+ */

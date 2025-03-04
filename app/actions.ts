@@ -162,8 +162,6 @@ export const FetchProfile = async () => {
   return { data: profiles, error };
 };
 
-
-
 interface InsertResult {
   data?: any;
   error?: any;
@@ -239,7 +237,8 @@ export const EditClients = async (client: Client) => {
     tipologia: client.tipologia,
     ambientes: client.ambientes,       // Mantener como string para coincidir con la interfaz
     operacion: client.operacion,
-    estado: client.estado
+    estado: client.estado,
+    notas: client.notas
   };
   console.log(updatedClient);
   const { data, error } = await supabase
